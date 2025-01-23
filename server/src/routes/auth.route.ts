@@ -83,7 +83,7 @@ const AuthRoute = Router();
  *                   description: list of errors
  */
 AuthRoute.post('/login', (req: Request, res: Response) => {
-    login(req as TypedRequestBody<LoginType>, res as TypedResponse<CustomResponse<AuthResponseType>>);
+    login(req as TypedRequestBody<LoginType>, res as TypedResponse<CustomResponse>);
 });
 
 export default AuthRoute;

@@ -5,7 +5,7 @@ import JWT from 'jsonwebtoken';
 import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
 import { AuthResponseType, LoginType, UserType } from "../configs/types";
 
-export const login = async (req: TypedRequestBody<LoginType>, res: TypedResponse<CustomResponse<AuthResponseType>>) => {
+export const login = async (req: TypedRequestBody<LoginType>, res: TypedResponse<CustomResponse>) => {
     try {
         //validate the user input
         const data = req.body;
