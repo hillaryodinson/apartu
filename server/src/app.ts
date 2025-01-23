@@ -1,13 +1,16 @@
 import bodyParser from "body-parser";
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from 'swagger-ui-express';
 import { specs } from "./swagger";
 import DefaultRoute from './routes/default';
+import path from "path";
 
 export const InitApp = () => {
   const app = express();
+  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, '/views'));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(helmet({
@@ -21,8 +24,12 @@ export const InitApp = () => {
       allowedHeaders: ["Content-Type"],
     })
   );
-  
-  app.use('/', swaggerUi.serve, swaggerUi.setup(specs));
+
+  app.get("/", (req: Request, res: Response) => {
+    res.render("index");
+  });
+
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
   app.use("/api", DefaultRoute);
   
   return app;
