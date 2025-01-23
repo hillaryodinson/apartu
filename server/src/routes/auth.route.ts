@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
-import { login } from "../controllers/auth.controller";
+import { login, resetPassword } from "../controllers/auth.controller";
 import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
-import { AuthResponseType, LoginType, UserType } from "../configs/types";
+import { LoginType, ResetPasswordType, UserType } from "../configs/types";
 
 const AuthRoute = Router();
 
@@ -84,6 +84,63 @@ const AuthRoute = Router();
  */
 AuthRoute.post('/login', (req: Request, res: Response) => {
     login(req as TypedRequestBody<LoginType>, res as TypedResponse<CustomResponse>);
+});
+
+/**
+ * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     summary: Request a password reset
+ *     description: Requests a password reset and sends a link to the specified email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - callback_url
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email address to send the reset link to
+ *               callback_url:
+ *                 type: string
+ *                 description: The url to redirect the user to after the reset link is clicked
+ *     responses:
+ *       200:
+ *         description: A message indicating that the email has been sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the email was sent successfully
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the login was successful
+ *                 message:
+ *                   type: string
+ *                   description: an error message
+ *                 errors:
+ *                   type: string
+ *                   description: list of errors
+ */
+AuthRoute.post('/reset-password', (req: Request, res: Response) => {
+    resetPassword(req as TypedRequestBody<ResetPasswordType>, res as TypedResponse<CustomResponse>);
 });
 
 export default AuthRoute;
