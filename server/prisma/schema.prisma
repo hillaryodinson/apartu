@@ -36,3 +36,20 @@ model PasswordReset {
   expiresIn DateTime
   createdAt DateTime @default(now())
 }
+
+enum MailStatus {
+  pending
+  sent
+  failed
+  cancelled
+}
+model Mail {
+  id String @id  @default(uuid())
+  to String
+  from String
+  subject String
+  content String
+  status MailStatus @default(pending)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}

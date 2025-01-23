@@ -1,10 +1,16 @@
 import { Request, Response, Router } from "express";
-import { login, resetPassword } from "../controllers/auth.controller";
+import { confirmPasswordReset, login, resetPassword } from "../controllers/auth.controller";
 import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
-import { LoginType, ResetPasswordType, UserType } from "../configs/types";
+import { ConfirmPasswordResetType, LoginType, ResetPasswordType, UserType } from "../configs/types";
 
 const AuthRoute = Router();
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Authentication
+ *     description: Authentication routes
+ */
 
 /**
  * @swagger
@@ -12,6 +18,7 @@ const AuthRoute = Router();
  *   post:
  *     summary: login
  *     description: Logs in a user and returns a JWT token
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -92,6 +99,7 @@ AuthRoute.post('/login', (req: Request, res: Response) => {
  *   post:
  *     summary: Request a password reset
  *     description: Requests a password reset and sends a link to the specified email
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -141,6 +149,61 @@ AuthRoute.post('/login', (req: Request, res: Response) => {
  */
 AuthRoute.post('/reset-password', (req: Request, res: Response) => {
     resetPassword(req as TypedRequestBody<ResetPasswordType>, res as TypedResponse<CustomResponse>);
+});
+
+/**
+ * @swagger
+ * /auth/reset-password/confirm:
+ *   post:
+ *     summary: Confirm the password reset
+ *     description: Confirms the password reset by updating the user's password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: The token sent in the email
+ *               password:
+ *                 type: string
+ *                 description: The new password to set
+ *     responses:
+ *       200:
+ *         description: A message indicating that the password has been reset
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the password was reset successfully
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the login was successful
+ *                 message:
+ *                   type: string
+ *                   description: an error message
+ *                 errors:
+ *                   type: string
+ *                   description: list of errors
+ */
+AuthRoute.post('/reset-password/confirm', (req: Request, res: Response) => {
+    confirmPasswordReset(req as TypedRequestBody<ConfirmPasswordResetType>, res as TypedResponse<CustomResponse>);
 });
 
 export default AuthRoute;
