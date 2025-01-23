@@ -1,4 +1,4 @@
-import { InitApp } from "./index";
+import { InitApp } from "./app";
 
 const app = InitApp();
 app.listen(3000, () => console.log("Server running on port 3000"));

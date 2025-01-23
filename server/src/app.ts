@@ -2,12 +2,18 @@ import bodyParser from "body-parser";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import swaggerUi from 'swagger-ui-express';
+import { specs } from "./swagger";
+import DefaultRoute from './routes/default';
 
 export const InitApp = () => {
   const app = express();
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  app.use(helmet())
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    xDownloadOptions: false,
+  }));
   app.use(
     cors({
       origin: "*",
@@ -15,10 +21,9 @@ export const InitApp = () => {
       allowedHeaders: ["Content-Type"],
     })
   );
-
-  app.get("/", (req, res) => {
-    res.send("APARTU");
-  });
-
+  
+  app.use('/', swaggerUi.serve, swaggerUi.setup(specs));
+  app.use("/api", DefaultRoute);
+  
   return app;
 };
