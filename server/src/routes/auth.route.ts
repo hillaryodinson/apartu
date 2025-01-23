@@ -1,34 +1,35 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { login } from "../controllers/auth.controller";
+import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
+import { AuthResponseType, LoginType, UserType } from "../configs/types";
 
 const AuthRoute = Router();
+
+
 /**
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Logs a user in
- *     description: Logs a user in
+ *     summary: login
+ *     description: Logs in a user and returns a JWT token
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
- *                 description: The email for the user
+ *                 description: The user's email
+ *                 example: user@example.com
  *               password:
  *                 type: string
- *                 format: password
- *                 description: The password for the user
+ *                 description: The user's password
+ *                 example: my_secret_password
  *     responses:
  *       200:
- *         description: The logged in user
+ *         description: User authenticated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -36,31 +37,53 @@ const AuthRoute = Router();
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   description: whether the login was successful
  *                 message:
  *                   type: string
+ *                   description: a success message
  *                 data:
  *                   type: object
  *                   properties:
  *                     token:
  *                       type: string
+ *                       description: The JWT token
  *                     user:
  *                       type: object
  *                       properties:
  *                         id:
  *                           type: string
- *                         name:
- *                           type: string
+ *                           description: The user's id
  *                         email:
  *                           type: string
- *                           format: email
- *                         created:
+ *                           description: The user's email
+ *                         role:
  *                           type: string
- *                           format: date-time
+ *                           description: The user's role
+ *                         name:
+ *                           type: string
+ *                           description: The user's name
+ *                         created_at:
+ *                           type: string
+ *                           description: The user's creation date
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: whether the login was successful
+ *                 message:
+ *                   type: string
+ *                   description: an error message
  *                 errors:
- *                   type: array
- *                   items:
- *                     type: string
+ *                   type: string
+ *                   description: list of errors
  */
-AuthRoute.post('/login', login);
+AuthRoute.post('/login', (req: Request, res: Response) => {
+    login(req as TypedRequestBody<LoginType>, res as TypedResponse<CustomResponse<AuthResponseType>>);
+});
 
 export default AuthRoute;

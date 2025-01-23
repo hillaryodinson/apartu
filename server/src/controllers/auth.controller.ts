@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import { loginSchema } from "../configs/zod";
 import db from '../configs/db';
 import JWT from 'jsonwebtoken';
-import { CustomResponse, TypedResponse } from "../configs/requests";
+import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
+import { AuthResponseType, LoginType, UserType } from "../configs/types";
 
-export const login = async (req: Request, res: TypedResponse<CustomResponse>) => {
+export const login = async (req: TypedRequestBody<LoginType>, res: TypedResponse<CustomResponse<AuthResponseType>>) => {
     try {
         //validate the user input
         const data = req.body;
@@ -35,10 +36,7 @@ export const login = async (req: Request, res: TypedResponse<CustomResponse>) =>
             message: 'User logged in successfully',
             data: {
                 token,
-                user: {
-                    ...dbResponse,
-                    password: undefined
-                }
+                user: {...dbResponse, password:undefined} as UserType
             }
         })
     } catch (error: any) {

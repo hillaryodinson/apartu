@@ -26,9 +26,9 @@ export interface TypedResponse<ResBody> extends Response {
     json: Send<ResBody, this>;
 }
 
-export interface CustomResponse {
+export interface CustomResponse <T>{
     success: boolean;
     message?: string;
-    data?: any;
+    data?: T;
     errors?: any;
 }
