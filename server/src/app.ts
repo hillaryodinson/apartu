@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from 'swagger-ui-express';
 import { specs } from "./swagger";
-import DefaultRoute from './routes/default';
+import initRoutes from './routes/default';
 import path from "path";
 
 export const InitApp = () => {
@@ -30,7 +30,7 @@ export const InitApp = () => {
   });
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
-  app.use("/api", DefaultRoute);
+  initRoutes('/api', app);
   
   return app;
 };
