@@ -5,6 +5,7 @@ import db from "../configs/db";
 import argon2 from "argon2";
 import dotenv from 'dotenv';
 import { NodemailerDB } from "../services/nodemailer-db";
+import { TypedRequestQuery } from "../configs/requests";
 dotenv.config();
 
 export const newAccount = async(req: Request, res: Response)=> {
@@ -23,7 +24,7 @@ export const newAccount = async(req: Request, res: Response)=> {
                 role
             },
         });
-
+        //verify email address
         //send welcome email
         const mailer = new NodemailerDB(db);
         await mailer.sendMail({
@@ -34,11 +35,12 @@ export const newAccount = async(req: Request, res: Response)=> {
                 name
             },
             from: process.env.EMAIL || 'no-reply@example.com'
-        })
+        });
         return res.status(200).json({
             success: true,
             message: "Account was created successfully",
         });
+
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -46,4 +48,36 @@ export const newAccount = async(req: Request, res: Response)=> {
             errors: error,
         });
     }
+}
+
+export const verifyEmail = async (req: TypedRequestQuery<{token:string, callback:string}>, res: Response) => {
+    //check if the token exists
+    const {token, callback} = req.query;
+    try {
+        const user = await db.user.findFirst({
+            where: {
+                actiToken: token
+            }
+        });
+
+        if (!user) throw new Error("Invalid activation token");
+        //if it does remove token from account
+        await db.user.update({
+            data:{
+                actiToken:null
+            },
+            where: {
+                id: user.id
+            }
+        });
+
+        //redirect user to callback
+        res.redirect(`${callback}?msg=OK`);
+    } catch (error:any) {
+        res.redirect(`${callback}?msg=ERR`);
+    }
+}
+
+export const changePassword = async (req: Request, res: Response) => {
+    
 }
