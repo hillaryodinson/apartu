@@ -22,8 +22,8 @@ export class NodemailerDB {
             port: 2525,
             secure: false, // use SSL
             auth: {
-                user: '391729eedaf2d3',
-                pass: '2d655b2f5b2597',
+                user: process.env.MAILTRAP_USER,
+                pass: process.env.MAILTRAP_PASS,
             }
         });
 

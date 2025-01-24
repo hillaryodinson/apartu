@@ -28,6 +28,9 @@ model User {
   role Role
   actiToken String?
   createdAt DateTime @default(now())
+
+  properties Property[]
+  leases Lease[]
 }
 
 model PasswordReset {
@@ -53,4 +56,64 @@ model Mail {
   status MailStatus @default(pending)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+}
+
+model Property {
+  id        String      @id @default(uuid())
+  name      String
+  address   String
+  type      PropertyType
+  owner     User    @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  units     Unit[]
+  country String
+  state String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Unit {
+  id            String      @id @default(uuid())
+  property      Property @relation(fields: [propertyId], references: [id])
+  propertyId    String
+  name          String
+  type          UnitType
+  rentPrice     Float
+  availability  Availability @default(AVAILABLE)
+  parentUnit    Unit?    @relation("ParentChild", fields: [parentUnitId], references: [id])
+  parentUnitId  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subUnits      Unit[]   @relation("ParentChild")
+  leases        Lease[]
+}
+
+model Lease {
+  id        Int      @id @default(autoincrement())
+  unit      Unit     @relation(fields: [unitId], references: [id])
+  unitId    String
+  tenant    User   @relation(fields: [tenantId], references: [id])
+  tenantId  String
+  startDate DateTime
+  endDate   DateTime?
+  rentAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT_COMPLEX
+}
+
+enum UnitType {
+  ENTIRE_PROPERTY
+  APARTMENT
+  ROOM
+}
+
+enum Availability {
+  AVAILABLE
+  RENTED
 }
