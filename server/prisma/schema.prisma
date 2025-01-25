@@ -21,22 +21,22 @@ enum Role {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  role Role
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
   actiToken String?
   createdAt DateTime @default(now())
 
   properties Property[]
-  leases Lease[]
+  leases     Lease[]
 }
 
 model PasswordReset {
-  id String @id @default(uuid())
-  userId String
-  token String @unique
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
   expiresIn DateTime
   createdAt DateTime @default(now())
 }
@@ -47,62 +47,72 @@ enum MailStatus {
   failed
   cancelled
 }
+
 model Mail {
-  id String @id  @default(uuid())
-  to String
-  from String
-  subject String
-  content String
-  status MailStatus @default(pending)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  id        String     @id @default(uuid())
+  to        String
+  from      String
+  subject   String
+  content   String
+  status    MailStatus @default(pending)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt()
 }
 
 model Property {
-  id        String      @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
   address   String
-  type      PropertyType
-  owner     User    @relation(fields: [ownerId], references: [id])
+  type      PropType
+  owner     User         @relation(fields: [ownerId], references: [id])
   ownerId   String
+  country   String
+  state     String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
   units     Unit[]
-  country String
-  state String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+}
+
+enum RentPaymentCycle {
+  DAILY
+  MONTHLY
+  YEARLY
 }
 
 model Unit {
-  id            String      @id @default(uuid())
-  property      Property @relation(fields: [propertyId], references: [id])
-  propertyId    String
-  name          String
-  type          UnitType
-  rentPrice     Float
-  availability  Availability @default(AVAILABLE)
-  parentUnit    Unit?    @relation("ParentChild", fields: [parentUnitId], references: [id])
-  parentUnitId  String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String           @id @default(uuid())
+  property     Property         @relation(fields: [propertyId], references: [id])
+  propertyId   String
+  name         String
+  type         UnitType
+  rentPrice    Float
+  rentDuration Int //inDays
+  rentCycle    RentPaymentCycle @default(YEARLY)
+  availability Availability     @default(AVAILABLE)
+  parentUnit   Unit?            @relation("ParentChild", fields: [parentUnitId], references: [id])
+  parentUnitId String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
-  subUnits      Unit[]   @relation("ParentChild")
-  leases        Lease[]
+  subUnits Unit[]  @relation("ParentChild")
+  leases   Lease[]
 }
 
 model Lease {
-  id        Int      @id @default(autoincrement())
-  unit      Unit     @relation(fields: [unitId], references: [id])
-  unitId    String
-  tenant    User   @relation(fields: [tenantId], references: [id])
-  tenantId  String
-  startDate DateTime
-  endDate   DateTime?
+  id         String    @id @default(uuid())
+  unit       Unit      @relation(fields: [unitId], references: [id])
+  unitId     String
+  tenant     User      @relation(fields: [tenantId], references: [id])
+  tenantId   String
+  startDate  DateTime
+  endDate    DateTime?
   rentAmount Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
-enum PropertyType {
+enum PropType {
   HOUSE
   APARTMENT_COMPLEX
 }
