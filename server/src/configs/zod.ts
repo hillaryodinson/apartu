@@ -25,7 +25,6 @@ export const newAccountSchema = z.object({
 export const propertySchema = z.object({
     name: z.string(),
     address: z.string(),
-    city: z.string(),
     state: z.string(),
     country: z.string(),
     type: z.enum(['HOUSE','APARTMENT_COMPLEX'])
@@ -36,7 +35,7 @@ export const unitSchema = z.object({
     type: z.enum(['ENTIRE_PROPERTY', 'APARTMENT', 'ROOM']),
     rentPrice: z.number().positive("Rent price must be a positive number"),
     rentDuration: z.number().positive("Rent duration must be a positive number"),
-    rentCycle: z.enum(['DAILY', 'MONTHLY', 'YEARLY']),
+    rentCycle: z.enum(['DAILY','WEEKLY', 'MONTHLY', 'YEARLY']),
     availability: z.enum(['AVAILABLE', 'RENTED']).optional()
 })
 

@@ -20,22 +20,7 @@ const PropertyRoute = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Name of the property
- *               address:
- *                 type: string
- *                 description: Address of the property
- *               type:
- *                 type: string
- *                 description: Type of the property
- *               country:
- *                 type: string
- *                 description: Country of the property
- *               state:
- *                 type: string
- *                 description: State of the property
+ *             $ref: '#/components/schemas/Property'
  *     responses:
  *       200:
  *         description: The property was added successfully

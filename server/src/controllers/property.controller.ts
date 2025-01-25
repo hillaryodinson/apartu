@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CustomResponse, TypedRequest, TypedRequestBody, TypedResponse } from "../configs/requests";
-import { propertySchema } from "../configs/zod";
+import { propertySchema, unitSchema } from "../configs/zod";
 import db from "../configs/db";
 import { PropertyType } from "../configs/types";
 import { AppError, ERROR_CODES } from "../utils/errors";
@@ -24,6 +24,7 @@ export const addProperty = async (req: Request, res: Response) => {
                 ownerId: owner.id,
                 country: zodResponse.data.country,
                 state: zodResponse.data.state,
+                
             }
         });
 
@@ -33,4 +34,17 @@ export const addProperty = async (req: Request, res: Response) => {
             message: "Property created successfully",
             data: property
         })
+}
+
+export const addUnit = async (req: Request, res: Response) => {
+    const zodResponse = unitSchema.safeParse(req.body);
+    const params = (req as TypedRequest<{propertyId: string}>).params;
+    const propertyId = params.propertyId;
+    if (zodResponse.error) throw zodResponse.error;
+
+    const property = await db.property.findUnique({
+        where: {
+            id: propertyId
+        }
+    });
 }

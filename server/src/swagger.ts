@@ -14,6 +14,20 @@ const options = {
         description:'Development server',
       },
     ],
+    tags:[
+      {
+        name: 'Property',
+        description: 'Property related endpoints'
+      },
+      {
+        name: 'Authentication',
+        description: 'Authentication related endpoints'
+      },
+      {
+        name: 'User',
+        description: 'User related endpoints'
+      }
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -22,6 +36,67 @@ const options = {
           bearerFormat: 'JWT',
         },
       },
+      schemas: {
+        Property: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              example: 'House 1',
+            },
+            address: {
+              type: 'string',
+              example: '123 Main St',
+            },
+            type: {
+              type: 'string',
+              enum: ['HOUSE', 'APARTMENT_COMPLEX'],
+              example: 'HOUSE',
+            },
+            country: {
+              type: 'string',
+              example: 'USA',
+            },
+            state: {
+              type: 'string',
+              example: 'CA',
+            },
+          }
+        },
+        Unit: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              example: 'Room 1',
+            },
+            type: {
+              type: 'string',
+              enum: ['ENTIRE_PROPERTY', 'APARTMENT', 'ROOM'],
+              example: 'ENTIRE_PROPERTY',
+            },
+            rentPrice: {
+              type: 'number',
+              example: 1000,
+            },
+            rentDuration: {
+              type: 'number',
+              description: 'How long before rent is due in days',
+              example: 365,
+            },
+            rentCycle: {
+              type: 'string',
+              enum: ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'],
+              example: 'DAILY',
+            },
+            availability: {
+              type: 'string',
+              enum: ['AVAILABLE', 'RENTED'],
+              example: 'AVAILABLE',
+            },
+          }
+        }
+      }
     },
   },
   apis: ['./src/routes/*.ts'],
