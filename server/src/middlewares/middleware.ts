@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, RequestHandler, Response } from "express";
 import JWT from "jsonwebtoken";
 import { AccessTokenType } from "../configs/types";
 import { ParsedQs } from "qs";
@@ -9,6 +9,8 @@ import {
   TypedRequestBody,
   TypedResponse,
 } from "../configs/requests";
+import { ZodError } from "zod";
+import { AppError } from "../utils/errors";
 
 export const authorize = (req: Request, res: Response, next: NextFunction) => {
   //get the token from header
@@ -33,8 +35,28 @@ export const authorizeAccess = (
   //get the list of routes and the places they can access
 };
 
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {   
+export const errorHandler:ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {   
     console.log(err);
-    res.status(err.status || 500).json({ success:false, message: err.message });
+    if (err instanceof ZodError)
+    {
+        res.status(400).send({ success:false, message: `V${100}: Validation Errors`, errors: err.errors.map(e => ({message: e.message})) });
+    }
+
+    if (err instanceof AppError)
+    {
+        res.status(err.statusCode).send({ success:false, message: err.message, code: `E${err.errorCode}` });
+    }
+    
+    res.status(500).send({ success:false, message: err.message });
  }
 
+
+export const tryCatch = (fn: RequestHandler) => {
+  return async (req: any, res: TypedResponse<CustomResponse>, next: NextFunction) => {
+    try {
+      await fn(req, res, next);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+};

@@ -5,13 +5,13 @@ import db from "../configs/db";
 import argon2 from "argon2";
 import dotenv from 'dotenv';
 import { NodemailerDB } from "../services/nodemailer-db";
-import { TypedRequestQuery } from "../configs/requests";
+import { TypedRequest, TypedRequestQuery } from "../configs/requests";
+import { AppError, ERROR_CODES } from "../utils/errors";
 dotenv.config();
 
 export const newAccount = async(req: Request, res: Response)=> {
-    try {
         const zodResponse = newAccountSchema.safeParse(req.body);
-        if (zodResponse.error) throw new Error(zodResponse.error.message);
+        if (zodResponse.error) throw zodResponse.error;
 
         const {name, email, password, role} = zodResponse.data;
 
@@ -36,23 +36,15 @@ export const newAccount = async(req: Request, res: Response)=> {
             },
             from: process.env.EMAIL || 'no-reply@example.com'
         });
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
             message: "Account was created successfully",
         });
-
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "An error occured while creating account",
-            errors: error,
-        });
-    }
 }
 
-export const verifyEmail = async (req: TypedRequestQuery<{token:string, callback:string}>, res: Response) => {
+export const verifyEmail = async (req: Request, res: Response) => {
     //check if the token exists
-    const {token, callback} = req.query;
+    const {token, callback} = (req as TypedRequest<{token:string, callback:string}>).query;
     try {
         const user = await db.user.findFirst({
             where: {
@@ -60,7 +52,7 @@ export const verifyEmail = async (req: TypedRequestQuery<{token:string, callback
             }
         });
 
-        if (!user) throw new Error("Invalid activation token");
+        if (!user) throw new AppError(ERROR_CODES.VALIDATION_INVALID_TOKEN,"Invalid activation token");
         //if it does remove token from account
         await db.user.update({
             data:{
@@ -79,5 +71,5 @@ export const verifyEmail = async (req: TypedRequestQuery<{token:string, callback
 }
 
 export const changePassword = async (req: Request, res: Response) => {
-    
+
 }

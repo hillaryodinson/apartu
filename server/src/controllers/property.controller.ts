@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
-import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
+import { CustomResponse, TypedRequest, TypedRequestBody, TypedResponse } from "../configs/requests";
 import { propertySchema } from "../configs/zod";
 import db from "../configs/db";
 import { PropertyType } from "../configs/types";
+import { AppError, ERROR_CODES } from "../utils/errors";
 
-export const addProperty = async (req: TypedRequestBody<PropertyType>, res: TypedResponse<CustomResponse>) => {
-    try {
+export const addProperty = async (req: Request, res: Response) => {
+    
         //validate the user input
         const zodResponse = propertySchema.safeParse(req.body);
-        if (zodResponse.error) throw new Error(zodResponse.error.message);
+        if (zodResponse.error) throw zodResponse.error;
 
         //get the ownerId from req
-        const owner = req.user;
-        if (!owner) throw new Error("User not found");
+        const owner = (req as TypedRequest<{}, PropertyType>).user;
+        if (!owner) throw new AppError(ERROR_CODES.USER_NOT_FOUND, "User not found");
 
         //create the property if not existing
         const property = await db.property.create({
@@ -27,15 +28,9 @@ export const addProperty = async (req: TypedRequestBody<PropertyType>, res: Type
         });
 
         //return newly created property
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
             message: "Property created successfully",
             data: property
         })
-
-    } catch (error:any) {
-        return res.status(400).json({ 
-            success: false, message: error.message 
-        });
-    }
 }

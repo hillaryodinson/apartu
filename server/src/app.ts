@@ -8,6 +8,7 @@ import initRoutes from './routes/default';
 import path from "path";
 import dotenv from 'dotenv';
 import { errorHandler } from "./middlewares/middleware";
+import { ERROR_CODES } from "./services/errorcode-gen";
 dotenv.config();
 
 export const InitApp = () => {
@@ -34,6 +35,7 @@ export const InitApp = () => {
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
   initRoutes('/api', app);
+
   app.use(errorHandler);
   return app;
 };

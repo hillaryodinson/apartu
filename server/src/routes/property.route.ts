@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { addProperty } from "../controllers/property.controller";
-import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
+import { CustomResponse, TypedRequest, TypedRequestBody, TypedResponse } from "../configs/requests";
 import { PropertyType } from "../configs/types";
-import { authorize } from "../middlewares/middleware";
+import { authorize, tryCatch } from "../middlewares/middleware";
 
 const PropertyRoute = Router();
 /**
@@ -104,7 +104,9 @@ const PropertyRoute = Router();
  *                   type: object
  *                   description: An object containing the errors
  */
-PropertyRoute.post('/', authorize, (req: Request, res: Response) => {
-    addProperty(req as TypedRequestBody<PropertyType>, res as TypedResponse<CustomResponse>)
-})
+PropertyRoute.post('/', 
+    authorize, 
+    tryCatch(
+        (req, res) => addProperty(req as TypedRequest<{}, PropertyType>, res))
+)
 export default PropertyRoute;

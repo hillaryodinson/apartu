@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { CustomResponse, TypedRequestBody, TypedRequestQuery, TypedResponse } from "../configs/requests";
 import { NewAccountType } from "../configs/types";
 import { newAccount, verifyEmail } from "../controllers/user.controller";
+import { tryCatch } from "../middlewares/middleware";
 
 const UserRoute = Router();
 
@@ -65,9 +66,7 @@ const UserRoute = Router();
  *                   type: string
  *                   description: A message indicating the result of the operation
  */
-UserRoute.post('/register', (req: Request, res: Response) => {
-    newAccount(req as TypedRequestBody<NewAccountType>, res as TypedResponse<CustomResponse>);
-});
+UserRoute.post('/register', tryCatch(newAccount));
 
 /**
  * @swagger
@@ -112,8 +111,6 @@ UserRoute.post('/register', (req: Request, res: Response) => {
  *                   type: boolean
  *                   description: Whether the email was verified successfully with status err
  */
-UserRoute.get('/verify-email', (req: Request, res) => {
-    verifyEmail(req as TypedRequestQuery<{token:string, callback:string}>, res as TypedResponse<CustomResponse>);
-}) 
+UserRoute.get('/verify-email', tryCatch(verifyEmail)) 
 
 export default UserRoute;

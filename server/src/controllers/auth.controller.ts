@@ -3,6 +3,7 @@ import db from "../configs/db";
 import JWT from "jsonwebtoken";
 import {
   CustomResponse,
+  TypedRequest,
   TypedRequestBody,
   TypedResponse,
 } from "../configs/requests";
@@ -11,18 +12,20 @@ import argon2 from "argon2";
 import { randomUUID } from "crypto";
 import { NodemailerDB } from "../services/nodemailer-db";
 import dotenv from 'dotenv';
+import { AppError, ERROR_CODES } from "../utils/errors";
+import { Response } from "express";
 dotenv.config();
 
 export const login = async (
-  req: TypedRequestBody<LoginType>,
-  res: TypedResponse<CustomResponse>
+  req: TypedRequest<{}, LoginType>,
+  res: Response
 ) => {
-  try {
+  
     //validate the user input
     const data = req.body;
     const zodResponse = loginSchema.safeParse(data);
 
-    if (zodResponse.error) throw new Error(zodResponse.error.message);
+    if (zodResponse.error) throw zodResponse.error;
 
     //get the user data from the database
     const dbResponse = await db.user.findUnique({
@@ -31,14 +34,14 @@ export const login = async (
       },
     });
 
-    if (!dbResponse) throw new Error("User not found");
+    if (!dbResponse) throw new AppError(ERROR_CODES.USER_NOT_FOUND, "Invalid Username or Password");
 
     //check if the password is correct
     const isValidPassword = await argon2.verify(
       dbResponse.password,
       data.password
     );
-    if (!isValidPassword) throw new Error("Invalid Username or Password");
+    if (!isValidPassword) throw new AppError(ERROR_CODES.USER_PASSWORD_INCORRECT, "Invalid Username or Password");
 
     //create a jwt token
     const token = JWT.sign(
@@ -63,25 +66,18 @@ export const login = async (
         user: { ...dbResponse, password: undefined } as UserType,
       },
     });
-  } catch (error: any) {
-    //handle the error
-    res.status(400).json({
-      success: false,
-      message: "Invalid Username or Password",
-      errors: error.message,
-    });
-  }
+
 };
 
 export const resetPassword = async (
-  req: TypedRequestBody<ResetPasswordType>,
-  res: TypedResponse<CustomResponse>
+  req: TypedRequest<{}, ResetPasswordType>,
+  res: Response
 ) => {
-  try {
+ 
     //accepts a callback url and email
     const zodResponse = resetPasswordSchema.safeParse(req.body);
 
-    if (zodResponse.error) throw new Error(zodResponse.error.message);
+    if (zodResponse.error) throw zodResponse.error;
 
     const {email, callback_url} = zodResponse.data;
 
@@ -91,7 +87,7 @@ export const resetPassword = async (
       },
     });
     //checks if email is valid
-    if (!user) throw new Error("Invalid email address");
+    if (!user) throw new AppError(ERROR_CODES.USER_NOT_FOUND, "Invalid email address");
 
     //request a password reset
     const token = randomUUID();
@@ -102,9 +98,11 @@ export const resetPassword = async (
         expiresIn: new Date(Date.now() + 60 * 60 * 1000), //token is valid for 1 hour
       },
     });
+
     //generate a random token sent to email
     const mailer = new NodemailerDB(db);
     const resetUrl = `${callback_url}?token=${token}`;
+
     await mailer.sendMail({
       to: user.email,
       subject: "Password Reset",
@@ -116,28 +114,18 @@ export const resetPassword = async (
       from: "B9vY1@example.com",
     });
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Password reset request was sent to your email",
     });
-    //return response
-  } catch (error: any) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid email address",
-      errors: error.message,
-    });
-  }
 };
 
 export const confirmPasswordReset = async (
-    req: TypedRequestBody<ConfirmPasswordResetType>, 
-    res: TypedResponse<CustomResponse>
+    req: TypedRequest<{}, ConfirmPasswordResetType>, 
+    res: Response
 ) => {
-    try {
-
         const zodResponse = confirmPasswordResetSchema.safeParse(req.body);
-        if (zodResponse.error) throw new Error(zodResponse.error.message);
+        if (zodResponse.error) throw zodResponse.error;
 
         //gets the token and verifies if its valid
         const {token, password} = zodResponse.data;
@@ -146,7 +134,7 @@ export const confirmPasswordReset = async (
                 token,
             },
         });
-        if (!result) throw new Error("Invalid token");
+        if (!result) throw new AppError(ERROR_CODES.USER_INVALID_CREDENTIALS, "Invalid token");
         if (Date.now() > result.expiresIn.getTime()) throw new Error("Token has expired");
 
         //hash the new password
@@ -169,15 +157,8 @@ export const confirmPasswordReset = async (
             },
         });
 
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
             message: "Password reset successful",
         });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "An error occured while resetting password",
-            errors: error,
-        });
-    }
 };

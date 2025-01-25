@@ -1,7 +1,8 @@
 import { Request, Response, Router } from "express";
 import { confirmPasswordReset, login, resetPassword } from "../controllers/auth.controller";
-import { CustomResponse, TypedRequestBody, TypedResponse } from "../configs/requests";
+import { CustomResponse, TypedRequest, TypedRequestBody, TypedResponse } from "../configs/requests";
 import { ConfirmPasswordResetType, LoginType, ResetPasswordType, UserType } from "../configs/types";
+import { tryCatch } from "../middlewares/middleware";
 
 const AuthRoute = Router();
 
@@ -89,9 +90,7 @@ const AuthRoute = Router();
  *                   type: string
  *                   description: list of errors
  */
-AuthRoute.post('/login', (req: Request, res: Response) => {
-    login(req as TypedRequestBody<LoginType>, res as TypedResponse<CustomResponse>);
-});
+AuthRoute.post('/login', tryCatch((req, res) => login(req as TypedRequest<{}, LoginType>, res)));
 
 /**
  * @swagger
@@ -147,9 +146,7 @@ AuthRoute.post('/login', (req: Request, res: Response) => {
  *                   type: string
  *                   description: list of errors
  */
-AuthRoute.post('/reset-password', (req: Request, res: Response) => {
-    resetPassword(req as TypedRequestBody<ResetPasswordType>, res as TypedResponse<CustomResponse>);
-});
+AuthRoute.post('/reset-password', tryCatch((req, res) => resetPassword(req as TypedRequest<{}, ResetPasswordType>, res)));
 
 /**
  * @swagger
@@ -202,8 +199,6 @@ AuthRoute.post('/reset-password', (req: Request, res: Response) => {
  *                   type: string
  *                   description: list of errors
  */
-AuthRoute.post('/reset-password/confirm', (req: Request, res: Response) => {
-    confirmPasswordReset(req as TypedRequestBody<ConfirmPasswordResetType>, res as TypedResponse<CustomResponse>);
-});
+AuthRoute.post('/reset-password/confirm', tryCatch((req, res) => confirmPasswordReset(req as TypedRequest<{}, ConfirmPasswordResetType>, res)));
 
 export default AuthRoute;
