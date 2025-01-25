@@ -1,12 +1,9 @@
 import { ErrorRequestHandler, NextFunction, Request, RequestHandler, Response } from "express";
 import JWT from "jsonwebtoken";
 import { AccessTokenType } from "../configs/types";
-import { ParsedQs } from "qs";
 import {
   CustomResponse,
   RequestWithUser,
-  TypedRequest,
-  TypedRequestBody,
   TypedResponse,
 } from "../configs/requests";
 import { ZodError } from "zod";
@@ -39,7 +36,7 @@ export const errorHandler:ErrorRequestHandler = (err: any, req: Request, res: Re
     console.log(err);
     if (err instanceof ZodError)
     {
-        res.status(400).send({ success:false, message: `V${100}: Validation Errors`, errors: err.errors.map(e => ({message: e.message})) });
+        res.status(400).send({ success:false, message: `V${100}: Validation Errors`, errors: err.errors.map(e => ({fields:e.path.join(', '), message: e.message})) });
     }
 
     if (err instanceof AppError)
