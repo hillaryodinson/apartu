@@ -374,7 +374,7 @@ PropertyRoute.post("/:propertyId/unit", tryCatch(addUnit));
 
 /**
  * @swagger
- * /unit/{unitId}:
+ * /property/unit/{unitId}/availability:
  *   put:
  *     tags:
  *       - Property
@@ -529,7 +529,6 @@ PropertyRoute.delete("/unit/:unitId", authorize, tryCatch(deleteUnit));
  *                   description: A message indicating the result of the operation
  */
 PropertyRoute.put("/unit/:unitId", authorize, tryCatch(updateUnit));
-
 /**
  * @swagger
  * /property/unit:
