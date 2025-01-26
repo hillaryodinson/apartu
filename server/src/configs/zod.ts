@@ -39,3 +39,4 @@ export const unitSchema = z.object({
     availability: z.enum(['AVAILABLE', 'RENTED']).optional()
 })
 
+export const unitUpdateSchema = unitSchema.partial();

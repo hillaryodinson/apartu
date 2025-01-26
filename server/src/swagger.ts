@@ -16,12 +16,12 @@ const options = {
     ],
     tags:[
       {
-        name: 'Property',
-        description: 'Property related endpoints'
-      },
-      {
         name: 'Authentication',
         description: 'Authentication related endpoints'
+      },
+      {
+        name: 'Property',
+        description: 'Property related endpoints'
       },
       {
         name: 'User',

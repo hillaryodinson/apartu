@@ -7,7 +7,7 @@ import {
   TypedResponse,
 } from "../configs/requests";
 import { ZodError } from "zod";
-import { AppError } from "../utils/errors";
+import { AppError, ERROR_CODES } from "../utils/errors";
 
 export const authorize = (req: Request, res: Response, next: NextFunction) => {
   //get the token from header
@@ -16,7 +16,7 @@ export const authorize = (req: Request, res: Response, next: NextFunction) => {
     | undefined;
 
   if (!token)
-    return next({ status: 401, message: "Access denied. No token provided." });
+    return next(new AppError(ERROR_CODES.VALIDATION_INVALID_TOKEN, "Unauthorized"));
 
   const tokenInfo = JWT.verify(token, process.env.JWT_SECRET as string);
   (req as RequestWithUser).user = tokenInfo as AccessTokenType;
@@ -36,15 +36,14 @@ export const errorHandler:ErrorRequestHandler = (err: any, req: Request, res: Re
     console.log(err);
     if (err instanceof ZodError)
     {
-        res.status(400).send({ success:false, message: `V${100}: Validation Errors`, errors: err.errors.map(e => ({fields:e.path.join(', '), message: e.message})) });
-    }
-
-    if (err instanceof AppError)
+        res.status(400).json({ success:false, message: `V${100}: Validation Errors`, errors: err.errors.map(e => ({fields:e.path.join(', '), message: e.message})) });
+    }else if (err instanceof AppError)
     {
-        res.status(err.statusCode).send({ success:false, message: err.message, code: `E${err.errorCode}` });
+        res.status(err.statusCode).json({ success:false, message: err.message, code: `E${err.errorCode}` });
+    }else{
+      console.log(err.message);
+      res.status(500).send({ success:false, message: "Oops an error occured. Please contact administrator", code: "EE00" });
     }
-    
-    res.status(500).send({ success:false, message: err.message });
  }
 
 
