@@ -55,7 +55,15 @@ export const getOwnerProperties = async (req: Request, res: Response) => {
 export const getProperties = async (req: Request, res: Response) => {
   const properties = await db.property.findMany({
     include: {
-      units: true,
+      units: {
+        where: {
+            parentUnit: null
+        },
+        include: {
+            subUnits: true
+        }
+      },
+
     },
   });
   res.status(200).json({
@@ -309,3 +317,49 @@ export const getUnit = async (req: Request, res: Response) => {
     data: unit,
   });
 };
+
+export const addSubUnit = async (req: Request, res: Response) => {
+    const request = (req as TypedRequest<{ unitId: string }>);
+    const params = request.params;
+    const unitId = params.unitId;
+    const owner = request.user;
+
+    if (!owner)
+      throw new AppError(ERROR_CODES.VALIDATION_UNAUTHENTICATED, "Unauthorized");
+
+    const zodResponse = unitSchema.safeParse(req.body);
+    if (zodResponse.error) throw zodResponse.error;
+
+    const unit = await db.unit.findUnique({
+      where: {
+        id: unitId,
+        property: {
+          ownerId: owner.id
+        }
+      },
+    });
+
+    if (!unit)
+      throw new AppError(ERROR_CODES.PROPERTY_NOT_FOUND, "Property not found");
+
+    await db.unit.create({
+      data: {
+        ...zodResponse.data,
+        parentUnit: {
+          connect: {
+            id: unit.id,
+          },
+        },
+        property: {
+          connect: {
+            id: unit.propertyId,
+          },
+        },
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Sub Unit created successfully",
+    });
+}
