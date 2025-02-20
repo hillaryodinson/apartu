@@ -5,7 +5,7 @@ import db from "../configs/db";
 import argon2 from "argon2";
 import dotenv from 'dotenv';
 import { NodemailerDB } from "../services/nodemailer-db";
-import { TypedRequest, TypedRequestQuery } from "../configs/requests";
+import { TypedRequest } from "../configs/requests";
 import { AppError, ERROR_CODES } from "../utils/errors";
 dotenv.config();
 

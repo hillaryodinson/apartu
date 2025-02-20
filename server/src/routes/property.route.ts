@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import {
   addProperty,
+  addSubUnit,
   addUnit,
   deleteProperty,
   deleteUnit,
@@ -485,14 +486,14 @@ PropertyRoute.delete("/unit/:unitId", authorize, tryCatch(deleteUnit));
  *       - Property
  *     security:
  *       - bearerAuth: []
- *     summary: Updates a unit
- *     description: Updates a unit by its ID
+ *     summary: Updates a unit or sub unit
+ *     description: Updates a unit or sub unit by its ID
  *     parameters:
  *       - in: path
  *         name: unitId
  *         required: true
  *         type: string
- *         description: The ID of the unit to update
+ *         description: The ID of the unit or sub unit to update
  *     requestBody:
  *       required: true
  *       content:
@@ -574,5 +575,61 @@ PropertyRoute.put("/unit/:unitId", authorize, tryCatch(updateUnit));
  *                   description: A message indicating the result of the operation
  */
 PropertyRoute.get("/unit", authorize, tryCatch(getUnit));
+
+/**
+ * @swagger
+ * /property/unit/{unitId}/subunit:
+ *   post:
+ *     tags:
+ *       - Property
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Creates a new subunit in a unit
+ *     description: Creates a new subunit in a unit
+ *     parameters:
+ *       - in: path
+ *         name: unitId
+ *         required: true
+ *         type: string
+ *         description: The ID of the unit to create the subunit in
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: "#/components/schemas/Unit"
+ *     responses:
+ *       201:
+ *         description: Subunit created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the subunit was created successfully
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *                 data:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Unit'
+ *       401:
+ *         description: Error Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the operation was successful
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ */
+PropertyRoute.post("/unit/:unitId/subunit", authorize, tryCatch(addSubUnit));
 
 export default PropertyRoute;
