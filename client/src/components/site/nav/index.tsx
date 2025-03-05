@@ -2,7 +2,7 @@ import { UserIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Nav = () => {
+const Nav = ({ className }: { className?: string }) => {
 	React.useEffect(() => {
 		const handleScroll = () => {
 			const topnav = document.getElementById("topnav");
@@ -21,7 +21,7 @@ const Nav = () => {
 
 	return (
 		<>
-			<nav id="topnav" className="defaultscroll is-sticky tagline-height">
+			<nav id="topnav" className={`defaultscroll is-sticky ${className}`}>
 				<div className="container relative">
 					<Link className="logo" to="index.html">
 						<img

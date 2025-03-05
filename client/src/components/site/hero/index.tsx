@@ -1,6 +1,6 @@
 const HeroSection = () => {
 	return (
-		<section className="relative overflow-hidden md:h-screen flex items-center md:py-0 py-36 bg-cyan-100 dark:bg-cyan-500/20 bg-[url('../../assets/images/bg/bg3.png')] bg-no-repeat bg-top bg-cover">
+		<section className="relative overflow-hidden md:h-screen flex items-center md:py-0 py-36 pt-24 bg-cyan-100 dark:bg-cyan-500/20 bg-[url('../../assets/images/bg/bg3.png')] bg-no-repeat bg-top bg-cover">
 			<div className="container relative">
 				<div className="grid grid-cols-1 items-center mt-10">
 					<div className="md:text-start text-center">

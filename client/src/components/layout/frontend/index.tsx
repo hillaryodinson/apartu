@@ -1,14 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import TagLine from "../../site/tagline";
 import Nav from "../../site/nav";
 import Footer from "../../site/footer";
 
 const FrontendLayout = () => {
+	const location = useLocation();
 	return (
 		<>
-			<TagLine />
-			<Nav />
-			<div>Layout Here woot woot!!</div>
+			{location.pathname !== "/" ? (
+				<Nav />
+			) : (
+				<>
+					<TagLine />
+					<Nav className="tagline-height" />
+				</>
+			)}
 			<Outlet />
 			<Footer />
 		</>
