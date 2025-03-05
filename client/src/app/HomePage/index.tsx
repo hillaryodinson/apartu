@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import AboutSection from "../../components/site/about";
 import HeroSection from "../../components/site/hero";
 import ListingCategorySection from "../../components/site/listing-category";
@@ -6,6 +7,9 @@ import ListingPropertySection from "../../components/site/listing-property";
 const HomePage = () => {
 	return (
 		<>
+			<Helmet>
+				<title>Home | Apartu</title>
+			</Helmet>
 			<HeroSection />
 			<AboutSection />
 			<section className="relative md:py-24 py-16">

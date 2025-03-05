@@ -1,8 +1,10 @@
 import { UserIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Nav = ({ className }: { className?: string }) => {
+	const location = useLocation();
 	React.useEffect(() => {
 		const handleScroll = () => {
 			const topnav = document.getElementById("topnav");
@@ -18,6 +20,14 @@ const Nav = ({ className }: { className?: string }) => {
 			window.removeEventListener("scroll", handleScroll);
 		};
 	}, []);
+
+	const isActive = (path: string, segment = 1) => {
+		const currentPath = location.pathname.split("/");
+
+		console.log(currentPath[segment], path);
+		// Match the beginning of the path (handle "/about" matching "/about/team")
+		return currentPath[1] === path ? "active" : "";
+	};
 
 	return (
 		<>
@@ -71,227 +81,20 @@ const Nav = ({ className }: { className?: string }) => {
 
 					<div id="navigation">
 						<ul className="navigation-menu !justify-end">
-							<li className="has-submenu parent-parent-menu-item active">
-								<Link to="javascript:void(0)">Home</Link>
-								<span className="menu-arrow"></span>
-
-								<ul className="submenu megamenu">
-									<li>
-										<ul>
-											<li>
-												<Link
-													to="index.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-one.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero One
-														</span>
-													</div>
-												</Link>
-											</li>
-											<li>
-												<Link
-													to="index-two.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-two.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Two
-														</span>
-													</div>
-												</Link>
-											</li>
-										</ul>
-									</li>
-
-									<li>
-										<ul>
-											<li>
-												<Link
-													to="index-three.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-three.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Three
-														</span>
-													</div>
-												</Link>
-											</li>
-											<li>
-												<Link
-													to="index-four.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-four.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Four
-														</span>
-													</div>
-												</Link>
-											</li>
-										</ul>
-									</li>
-
-									<li>
-										<ul>
-											<li>
-												<Link
-													to="index-five.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-five.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Five
-														</span>
-													</div>
-												</Link>
-											</li>
-											<li>
-												<Link
-													to="index-six.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-six.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Six
-														</span>
-													</div>
-												</Link>
-											</li>
-										</ul>
-									</li>
-
-									<li>
-										<ul>
-											<li>
-												<Link
-													to="index-seven.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-seven.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Seven
-														</span>
-													</div>
-												</Link>
-											</li>
-											<li>
-												<Link
-													to="index-eight.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-eight.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Eight
-														</span>
-													</div>
-												</Link>
-											</li>
-										</ul>
-									</li>
-
-									<li>
-										<ul>
-											<li className="active">
-												<Link
-													to="index-nine.html"
-													className="sub-menu-item active">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-nine.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Nine
-														</span>
-													</div>
-												</Link>
-											</li>
-
-											<li>
-												<Link
-													to="index-ten.html"
-													className="sub-menu-item">
-													<div className="lg:text-center">
-														<span className="none lg:block">
-															<img
-																src="assets/images/demos/hero-ten.png"
-																className="img-fluid rounded shadow-md"
-																alt=""
-															/>
-														</span>
-														<span className="lg:mt-2 block">
-															Hero Ten{" "}
-														</span>
-													</div>
-												</Link>
-											</li>
-										</ul>
-									</li>
-								</ul>
+							<li className={`sub-menu-item ${isActive("")} `}>
+								<Link to="/">Home</Link>
 							</li>
-							<li>
-								<Link to="buy.html" className="sub-menu-item">
-									Rent
-								</Link>
+							<li
+								className={`sub-menu-item ${isActive(
+									"properties"
+								)} `}>
+								<Link to="/properties">Rent</Link>
 							</li>
-							<li>
-								<Link to="sell.html" className="sub-menu-item">
-									Sell
-								</Link>
+							<li
+								className={`sub-menu-item ${isActive(
+									"properties"
+								)} `}>
+								<Link to="/properties/1">Sell</Link>
 							</li>
 							<li className="has-submenu parent-parent-menu-item">
 								<Link to="javascript:void(0)">Buy</Link>
@@ -388,8 +191,10 @@ const Nav = ({ className }: { className?: string }) => {
 							</li>
 							<li>
 								<Link
-									to="contact.html"
-									className="sub-menu-item">
+									to="/contact"
+									className={`sub-menu-item ${isActive(
+										"/contact"
+									)} `}>
 									Contact
 								</Link>
 							</li>

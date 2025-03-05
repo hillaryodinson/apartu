@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // @ts-expect-error "Already working fine"
 import "swiper/css";
-import "./App.css";
+import "./app-frontend.css";
 import HomePage from "./app/HomePage";
 import LoginPage from "./app/(auth)/Login";
 import SignUpPage from "./app/(auth)/Signup";
@@ -9,8 +9,9 @@ import { AuthProvider } from "./providers/auth-provider";
 import ProtectedRoute from "./middleware/ProtectedRoute";
 import NotFound from "./app/NotFound";
 import DashboardPage from "./app/(account)/client/Dashboard";
-import PropertyDetails from "./app/PropertyDetailsPage";
+import PropertyDetailsPage from "./app/PropertyDetailsPage";
 import FrontendLayout from "./components/layout/frontend";
+import PropertyListingPage from "./app/PropertyListingPage";
 
 function App() {
 	const routes = createBrowserRouter([
@@ -23,8 +24,12 @@ function App() {
 					element: <HomePage />,
 				},
 				{
-					path: "property/details/:propertyId",
-					element: <PropertyDetails />,
+					path: "properties",
+					element: <PropertyListingPage />,
+				},
+				{
+					path: "properties/:propertyId",
+					element: <PropertyDetailsPage />,
 				},
 			],
 		},
