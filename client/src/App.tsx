@@ -6,12 +6,25 @@ import SignUpPage from "./app/(auth)/Signup";
 import { AuthProvider } from "./providers/auth-provider";
 import ProtectedRoute from "./middleware/ProtectedRoute";
 import DashboardPage from "./app/(account)/client/Dashboard";
+import NotFound from "./app/NotFound";
+import PropertyDetails from "./app/PropertyDetails";
+import FrontendLayout from "./components/layout/frontend";
 
 function App() {
 	const routes = createBrowserRouter([
 		{
 			path: "/",
-			element: <HomePage />,
+			element: <FrontendLayout />,
+			children: [
+				{
+					index: true,
+					element: <HomePage />,
+				},
+				{
+					path: "property/details/:propertyId",
+					element: <PropertyDetails />,
+				},
+			],
 		},
 		{
 			path: "/login",
@@ -30,6 +43,10 @@ function App() {
 					element: <DashboardPage />,
 				},
 			],
+		},
+		{
+			path: "/*",
+			element: <NotFound />,
 		},
 	]);
 

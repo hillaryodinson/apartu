@@ -1,16 +1,11 @@
 import AboutSection from "../../components/site/about";
-import Footer from "../../components/site/footer";
 import HeroSection from "../../components/site/hero";
 import ListingCategorySection from "../../components/site/listing-category";
 import ListingPropertySection from "../../components/site/listing-property";
-import Nav from "../../components/site/nav";
-import TagLine from "../../components/site/tagline";
 
 const HomePage = () => {
 	return (
 		<>
-			<TagLine />
-			<Nav />
 			<HeroSection />
 			<AboutSection />
 			<section className="relative md:py-24 py-16">
@@ -40,7 +35,6 @@ const HomePage = () => {
 					</div>
 				</div>
 			</div>
-			<Footer />
 		</>
 	);
 };
