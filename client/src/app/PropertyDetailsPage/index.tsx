@@ -1,4 +1,3 @@
-import React from "react";
 import PropertyDetailInfo from "../../components/site/property-detail-info";
 
 const PropertyDetails = () => {

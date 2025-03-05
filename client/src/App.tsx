@@ -1,13 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import HomePage from "./app/Home";
+import HomePage from "./app/HomePage";
 import LoginPage from "./app/(auth)/Login";
 import SignUpPage from "./app/(auth)/Signup";
 import { AuthProvider } from "./providers/auth-provider";
 import ProtectedRoute from "./middleware/ProtectedRoute";
 import DashboardPage from "./app/(account)/client/Dashboard";
 import NotFound from "./app/NotFound";
-import PropertyDetails from "./app/PropertyDetails";
+import PropertyDetails from "./app/PropertyDetailsPage";
 import FrontendLayout from "./components/layout/frontend";
 
 function App() {
