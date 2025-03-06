@@ -23,6 +23,7 @@ import { NodemailerDB } from "../services/nodemailer-db";
 import dotenv from "dotenv";
 import { AppError, ERROR_CODES } from "../utils/errors";
 import { Response } from "express";
+import { sendActivationEmail } from "../utils/helper";
 dotenv.config();
 
 export const login = async (
@@ -39,7 +40,6 @@ export const login = async (
 	const dbResponse = await db.user.findUnique({
 		where: {
 			email: data.email,
-			actiToken: null,
 		},
 	});
 
@@ -59,6 +59,14 @@ export const login = async (
 			ERROR_CODES.USER_PASSWORD_INCORRECT,
 			"Invalid Username or Password"
 		);
+
+	if (dbResponse.actiToken !== null) {
+		await sendActivationEmail(dbResponse.actiToken, dbResponse);
+		throw new AppError(
+			ERROR_CODES.USER_ACCOUNT_NOT_ACTIVE,
+			"This account has not been activated"
+		);
+	}
 
 	//create a jwt token
 	const token = JWT.sign(

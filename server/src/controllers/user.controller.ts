@@ -11,6 +11,7 @@ import {
 } from "../configs/requests";
 import { AppError, ERROR_CODES } from "../utils/errors";
 import { randomUUID } from "crypto";
+import { sendActivationEmail } from "../utils/helper";
 dotenv.config();
 
 export const newAccount = async (req: Request, res: Response) => {
@@ -21,7 +22,7 @@ export const newAccount = async (req: Request, res: Response) => {
 
 	const hashedPassword = await argon2.hash(password);
 	const actiToken = randomUUID();
-	await db.user.create({
+	const user = await db.user.create({
 		data: {
 			name,
 			email,
@@ -31,22 +32,7 @@ export const newAccount = async (req: Request, res: Response) => {
 		},
 	});
 
-	//verify email address
-	const CLIENT_URL = process.env.CLIENT_URL || "https://localhost:3001";
-	const ACTIVATION_ROUTE = process.env.CLIENT_ACTIVATION_ROUTE || "/activate";
-	const ACTIVATION_URL = `${CLIENT_URL}${ACTIVATION_ROUTE}?token=${actiToken}`;
-
-	const mailer = new NodemailerDB(db);
-	await mailer.sendMail({
-		to: email,
-		subject: "Activate Your Account",
-		template: `activate_account`,
-		context: {
-			name: email,
-			activationURL: ACTIVATION_URL,
-		},
-		from: process.env.EMAIL || "no-reply@example.com",
-	});
+	await sendActivationEmail(actiToken, user);
 
 	res.status(200).json({
 		success: true,
