@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ApiResponse, AuthResponse } from "../../../utils/types";
 // import { useAuth } from "../../../providers/auth-provider";
 import { useUserStore } from "../../../store/user-store";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
@@ -18,6 +18,13 @@ const LoginPage = () => {
 	const redirect = useNavigate();
 	const setSession = useUserStore((state) => state.setSession);
 	const [isLoading, startTransition] = useTransition();
+	const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			redirect("/dashboard");
+		}
+	}, [isAuthenticated, redirect]);
 
 	const {
 		register,
@@ -144,11 +151,11 @@ const LoginPage = () => {
 											</label>
 										</div>
 										<p className="text-slate-400 mb-0">
-											<a
-												href="auth-re-password.html"
+											<Link
+												to="/reset-password"
 												className="text-slate-400">
 												Forgot password ?
-											</a>
+											</Link>
 										</p>
 									</div>
 
@@ -168,11 +175,11 @@ const LoginPage = () => {
 										<span className="text-slate-400 me-2">
 											Don't have an account ?
 										</span>{" "}
-										<a
-											href="auth-signup.html"
+										<Link
+											to="/signup"
 											className="text-slate-900 dark:text-white font-bold">
 											Sign Up
-										</a>
+										</Link>
 									</div>
 								</div>
 							</form>

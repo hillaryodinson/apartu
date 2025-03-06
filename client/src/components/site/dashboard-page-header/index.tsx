@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
 
 interface Location {
 	pathname: string;
@@ -49,9 +48,6 @@ const DashboardPageHeader = ({ title }: { title: string }) => {
 	const location = useLocation();
 	return (
 		<>
-			<Helmet>
-				<title>{title} | Apartu</title>
-			</Helmet>
 			<div className="flex justify-between pt-4 pb-1">
 				<h3>{title}</h3>
 				{generateBreadcrumbs(location)}

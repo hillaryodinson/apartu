@@ -1,37 +1,41 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import DashboardPageHeader from "@/components/site/dashboard-page-header";
+import DashCard from "@/components/site/dashcard";
+import { Flag, House, UsersRoundIcon } from "lucide-react";
+import { Helmet } from "react-helmet";
 
 const DashboardPage = () => {
 	return (
 		<>
+			<Helmet>
+				<title>Dashboard | Apartu</title>
+			</Helmet>
 			<DashboardPageHeader title="Dashboard" />
 			<div>
 				<div className="grid auto-rows-min gap-4 md:grid-cols-3">
-					<div className="">
-						<Card className="shadow-none">
-							<CardHeader>
-								<CardTitle>Card Title</CardTitle>
-								<CardDescription>
-									Card Description
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<p>Card Content</p>
-							</CardContent>
-							<CardFooter>
-								<p>Card Footer</p>
-							</CardFooter>
-						</Card>
-					</div>
-					<div className="aspect-video rounded-xl bg-muted/50" />
-					<div className="aspect-video rounded-xl bg-muted/50" />
+					<DashCard
+						title="Apartments"
+						value={0}
+						icon={House}
+						color="green"
+						detail="Total Apartments"
+						trend={"stable"}
+					/>
+					<DashCard
+						title="Tenants"
+						value={0}
+						icon={UsersRoundIcon}
+						color="blue"
+						detail="All Tenants"
+						trend={"stable"}
+					/>
+					<DashCard
+						title="Complaints"
+						value={0}
+						icon={Flag}
+						color="slate"
+						detail="Tenant Complaints"
+						trend={"stable"}
+					/>
 				</div>
 				<div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
 			</div>
