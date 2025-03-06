@@ -7,10 +7,10 @@ import { buttonVariants } from "@/components/ui/button";
 
 const AccountActivationPage = () => {
 	const location = useLocation();
-	const params = new URLSearchParams(location.search);
 	const [status, setStatus] = useState<"success" | "error">();
 
 	useEffect(() => {
+		const params = new URLSearchParams(location.search);
 		// Get the token from the URL
 		const token = params.get("token");
 
@@ -21,7 +21,7 @@ const AccountActivationPage = () => {
 		}
 
 		// Make a request to server to update the status of the transaction
-		api.post(`/activate/${token}`)
+		api.put(`/user/verify-email/${token}`)
 			.then((res) => {
 				// Handle the response based on the type
 				if (res.status == 200) {
@@ -33,7 +33,7 @@ const AccountActivationPage = () => {
 			.catch(() => {
 				setStatus("error");
 			});
-	}, [params]);
+	}, [location.search]);
 
 	return (
 		<>

@@ -4,7 +4,11 @@ import db from "../configs/db";
 import argon2 from "argon2";
 import dotenv from "dotenv";
 import { NodemailerDB } from "../services/nodemailer-db";
-import { TypedRequest } from "../configs/requests";
+import {
+	CustomResponse,
+	TypedRequest,
+	TypedResponse,
+} from "../configs/requests";
 import { AppError, ERROR_CODES } from "../utils/errors";
 import { randomUUID } from "crypto";
 dotenv.config();
@@ -50,50 +54,52 @@ export const newAccount = async (req: Request, res: Response) => {
 	});
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {
+export const verifyEmail = async (
+	req: Request,
+	res: TypedResponse<CustomResponse>
+) => {
 	//check if the token exists
-	const { token, callback } = (
-		req as TypedRequest<{ token: string; callback: string }>
-	).query;
-	try {
-		const user = await db.user.findFirst({
-			where: {
-				actiToken: token,
-			},
-		});
+	const { token } = (req as TypedRequest<{ token: string }>).params;
 
-		if (!user)
-			throw new AppError(
-				ERROR_CODES.VALIDATION_INVALID_TOKEN,
-				"Invalid activation token"
-			);
-		//if it does remove token from account
-		await db.user.update({
-			data: {
-				actiToken: null,
-			},
-			where: {
-				id: user.id,
-			},
-		});
+	const user = await db.user.findFirst({
+		where: {
+			actiToken: token,
+		},
+	});
 
-		//send welcome email
-		const mailer = new NodemailerDB(db);
-		await mailer.sendMail({
-			to: user.email,
-			subject: "Welcome to Apartu",
-			template: `welcome_${user.role}`,
-			context: {
-				name: user.email,
-			},
-			from: process.env.EMAIL || "no-reply@example.com",
-		});
+	if (!user)
+		throw new AppError(
+			ERROR_CODES.VALIDATION_INVALID_TOKEN,
+			"Invalid activation token"
+		);
+	//if it does remove token from account
+	await db.user.update({
+		data: {
+			actiToken: null,
+		},
+		where: {
+			id: user.id,
+		},
+	});
 
-		//redirect user to callback
-		res.redirect(`${callback}?msg=OK`);
-	} catch (error: any) {
-		res.redirect(`${callback}?msg=ERR`);
-	}
+	//send welcome email
+	const mailer = new NodemailerDB(db);
+	await mailer.sendMail({
+		to: user.email,
+		subject: "Welcome to Apartu",
+		template: `welcome_${user.role}`,
+		context: {
+			name: user.name,
+		},
+		from: process.env.EMAIL || "no-reply@example.com",
+	});
+
+	//redirect user to callback
+	res.status(200).json({
+		success: true,
+		message: "Activation was successful",
+		data: {},
+	});
 };
 
 export const changePassword = async (req: Request, res: Response) => {};

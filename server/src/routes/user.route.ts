@@ -59,36 +59,34 @@ UserRoute.post("/register", tryCatch(newAccount));
 
 /**
  * @swagger
- * /user/verify-email:
- *   get:
+ * /user/verify-email/{token}:
+ *   put:
  *     summary: Verifies the email address
- *     description: Verifies the email address and redirects to the callback URL with query parameter `msg=ok` or `msg=err`
+ *     description: Verifies the email address of the new user
  *     tags: [User]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: token
  *         schema:
  *           type: string
  *         required: true
  *         description: The token sent to the user's email
- *       - in: query
- *         name: callback
- *         schema:
- *           type: string
- *         required: true
- *         description: The URL to redirect the user to after the email is verified
+ *
  *     responses:
- *       301:
- *         description: Redirects the user to the callback URL with query parameter `?msg=ok` or `?msg=err`
+ *       200:
+ *         description: Shows a success message when user is verified successfully. it returns the authentication details for the user
  *         content:
  *           application/json:
  *             schema:
  *               type: string
  *               properties:
- *                 msg:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the operation was successful
+ *                 message:
  *                   type: string
- *                   description: Whether the email was verified successfully with status ok
- *                   example: ok
+ *                   description: A message indicating the result of the operation
+ *
  *       400:
  *         description: Bad request
  *         content:
@@ -96,10 +94,13 @@ UserRoute.post("/register", tryCatch(newAccount));
  *             schema:
  *               type: string
  *               properties:
- *                 msg:
+ *                 success:
  *                   type: boolean
- *                   description: Whether the email was verified successfully with status err
+ *                   description: Whether the operation was successful
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
  */
-UserRoute.get("/verify-email", tryCatch(verifyEmail));
+UserRoute.put("/verify-email/:token", tryCatch(verifyEmail));
 
 export default UserRoute;
