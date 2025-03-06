@@ -1,5 +1,10 @@
 import { Request, Response, Router } from "express";
-import { CustomResponse, TypedRequestBody, TypedRequestQuery, TypedResponse } from "../configs/requests";
+import {
+	CustomResponse,
+	TypedRequestBody,
+	TypedRequestQuery,
+	TypedResponse,
+} from "../configs/requests";
 import { NewAccountType } from "../configs/types";
 import { newAccount, verifyEmail } from "../controllers/user.controller";
 import { tryCatch } from "../middlewares/middleware";
@@ -20,24 +25,8 @@ const UserRoute = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - name
- *               - email
- *               - password
- *               - role
- *             properties:
- *               name:
- *                 type: string
- *                 description: The name of the user
- *               email:
- *                 type: string
- *                 description: The email address of the user
- *               password:
- *                 type: string
- *                 description: The password of the user
- *               role:
- *                 type: string
- *                 description: The role of the user supported roles (admin, landlord, caretaker, tenant)
+ *             $ref: "#/components/schemas/User"
+ *
  *     responses:
  *       200:
  *         description: A message indicating that the user has been created
@@ -66,7 +55,7 @@ const UserRoute = Router();
  *                   type: string
  *                   description: A message indicating the result of the operation
  */
-UserRoute.post('/register', tryCatch(newAccount));
+UserRoute.post("/register", tryCatch(newAccount));
 
 /**
  * @swagger
@@ -111,6 +100,6 @@ UserRoute.post('/register', tryCatch(newAccount));
  *                   type: boolean
  *                   description: Whether the email was verified successfully with status err
  */
-UserRoute.get('/verify-email', tryCatch(verifyEmail)) 
+UserRoute.get("/verify-email", tryCatch(verifyEmail));
 
 export default UserRoute;
