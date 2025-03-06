@@ -1,6 +1,5 @@
 /*! tailwindcss v4.0.6 | MIT License | https://tailwindcss.com */
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
-@tailind utilities;
 
 @layer theme, base, components, utilities;
 @layer theme {

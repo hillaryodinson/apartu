@@ -1,7 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// @ts-expect-error "Already working fine"
-import "swiper/css";
-import "./app-frontend.css";
 import HomePage from "./app/HomePage";
 import LoginPage from "./app/(auth)/Login";
 import SignUpPage from "./app/(auth)/Signup";
@@ -12,6 +9,8 @@ import DashboardPage from "./app/(account)/client/Dashboard";
 import PropertyDetailsPage from "./app/PropertyDetailsPage";
 import FrontendLayout from "./components/layout/frontend";
 import PropertyListingPage from "./app/PropertyListingPage";
+import { ToastContainer } from "react-toastify";
+import BackendLayout from "./components/layout/backend";
 
 function App() {
 	const routes = createBrowserRouter([
@@ -43,7 +42,11 @@ function App() {
 		},
 		{
 			path: "/",
-			element: <ProtectedRoute />, // This should be the only protected wrapper
+			element: (
+				<ProtectedRoute>
+					<BackendLayout />
+				</ProtectedRoute>
+			), // This should be the only protected wrapper
 			children: [
 				{
 					path: "/dashboard",
@@ -60,6 +63,7 @@ function App() {
 	return (
 		<AuthProvider>
 			<RouterProvider router={routes} />
+			<ToastContainer />
 		</AuthProvider>
 	);
 }
