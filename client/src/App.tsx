@@ -11,6 +11,7 @@ import FrontendLayout from "./components/layout/frontend";
 import PropertyListingPage from "./app/PropertyListingPage";
 import { ToastContainer } from "react-toastify";
 import BackendLayout from "./components/layout/backend";
+import AccountActivationPage from "./app/(auth)/AccountActivation";
 
 function App() {
 	const routes = createBrowserRouter([
@@ -35,6 +36,10 @@ function App() {
 		{
 			path: "/login",
 			element: <LoginPage />,
+		},
+		{
+			path: "/activate",
+			element: <AccountActivationPage />,
 		},
 		{
 			path: "/signup",
