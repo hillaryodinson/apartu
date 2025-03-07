@@ -1,15 +1,13 @@
 import * as React from "react";
 import {
-	AudioWaveform,
 	BookOpen,
 	Bot,
-	Command,
-	Frame,
-	GalleryVerticalEnd,
+	Home,
 	Map,
 	PieChart,
 	Settings2,
 	SquareTerminal,
+	User,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -23,113 +21,73 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar";
+import { useUserStore } from "@/store/user-store";
 
 // This is sample data.
 const data = {
-	user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "/avatars/shadcn.jpg",
+	site: {
+		name: "Apartu Homes",
+		logo: Home,
+		plan: "Enterprise",
 	},
-	teams: [
-		{
-			name: "Acme Inc",
-			logo: GalleryVerticalEnd,
-			plan: "Enterprise",
-		},
-		{
-			name: "Acme Corp.",
-			logo: AudioWaveform,
-			plan: "Startup",
-		},
-		{
-			name: "Evil Corp.",
-			logo: Command,
-			plan: "Free",
-		},
-	],
 	navMain: [
 		{
-			title: "Playground",
+			title: "Quick Links",
 			url: "#",
 			icon: SquareTerminal,
 			isActive: true,
 			items: [
 				{
-					title: "History",
-					url: "#",
-				},
-				{
-					title: "Starred",
-					url: "#",
-				},
-				{
-					title: "Settings",
-					url: "#",
+					title: "Dashboard",
+					url: "/dashboard",
 				},
 			],
 		},
 		{
-			title: "Models",
+			title: "My Properties",
 			url: "#",
 			icon: Bot,
 			items: [
 				{
-					title: "Genesis",
+					title: "Apartments",
 					url: "#",
 				},
 				{
-					title: "Explorer",
-					url: "#",
-				},
-				{
-					title: "Quantum",
+					title: "Units",
 					url: "#",
 				},
 			],
 		},
 		{
-			title: "Documentation",
+			title: "Tenants",
 			url: "#",
 			icon: BookOpen,
 			items: [
 				{
-					title: "Introduction",
+					title: "Active Tenants",
 					url: "#",
 				},
 				{
-					title: "Get Started",
+					title: "Past Tenants",
 					url: "#",
 				},
 				{
-					title: "Tutorials",
-					url: "#",
-				},
-				{
-					title: "Changelog",
+					title: "Complaints",
 					url: "#",
 				},
 			],
 		},
 		{
-			title: "Settings",
+			title: "Rents",
 			url: "#",
 			icon: Settings2,
 			items: [
 				{
-					title: "General",
+					title: "Upcoming Rent",
 					url: "#",
 				},
 				{
-					title: "Team",
-					url: "#",
-				},
-				{
-					title: "Billing",
-					url: "#",
-				},
-				{
-					title: "Limits",
+					title: "Rent History",
 					url: "#",
 				},
 			],
@@ -137,9 +95,9 @@ const data = {
 	],
 	projects: [
 		{
-			name: "Design Engineering",
-			url: "#",
-			icon: Frame,
+			name: "Account Settings",
+			url: "/account",
+			icon: User,
 		},
 		{
 			name: "Sales & Marketing",
@@ -155,17 +113,19 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+	const user = useUserStore((state) => state.user);
+
 	return (
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarHeader>
-				<TeamSwitcher teams={data.teams} />
+				<TeamSwitcher teams={data.site} />
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
 				<NavProjects projects={data.projects} />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser user={data.user} />
+				<NavUser user={{ ...user, avatar: "" }} />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>

@@ -32,9 +32,12 @@ export function NavUser({
 	user,
 }: {
 	user: {
-		name: string;
-		email: string;
-		avatar: string;
+		id?: string | undefined;
+		email?: string | undefined;
+		role?: string | undefined;
+		name?: string | undefined;
+		created_at?: string | undefined;
+		avatar: string | undefined;
 	};
 }) {
 	const { isMobile } = useSidebar();
