@@ -17,7 +17,7 @@ export const generateActivationToken = async (user: User) => {
 		});
 
 		await sendActivationEmail(actiToken, user);
-		return true;
+		return actiToken;
 	} catch (error) {
 		console.log("GenerateActivationToken Error: ", error);
 		return false;

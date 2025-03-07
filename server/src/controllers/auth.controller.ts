@@ -24,6 +24,7 @@ import dotenv from "dotenv";
 import { AppError, ERROR_CODES } from "../utils/errors";
 import { Response } from "express";
 import { sendActivationEmail } from "../utils/helper";
+import { generateActivationToken } from "../services/token-gen";
 dotenv.config();
 
 export const login = async (
@@ -61,7 +62,14 @@ export const login = async (
 		);
 
 	if (dbResponse.actiToken !== null) {
-		await sendActivationEmail(dbResponse.actiToken, dbResponse);
+		const token = await generateActivationToken(dbResponse);
+		if (!token)
+			throw new AppError(
+				ERROR_CODES.APP_GENERIC_ERROR,
+				"An error occured generating token",
+				500
+			);
+		await sendActivationEmail(token, dbResponse);
 		throw new AppError(
 			ERROR_CODES.USER_ACCOUNT_NOT_ACTIVE,
 			"This account has not been activated. Please check email for activation message and try again"

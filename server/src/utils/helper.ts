@@ -4,7 +4,7 @@ import db from "../configs/db";
 
 export const sendActivationEmail = async (token: string, user: User) => {
 	//verify email address
-	const CLIENT_URL = process.env.CLIENT_URL || "https://localhost:3001";
+	const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3001";
 	const ACTIVATION_ROUTE = process.env.CLIENT_ACTIVATION_ROUTE || "/activate";
 	const ACTIVATION_URL = `${CLIENT_URL}${ACTIVATION_ROUTE}?token=${token}`;
 
