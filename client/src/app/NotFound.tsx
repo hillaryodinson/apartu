@@ -1,5 +1,3 @@
-import React from "react";
-
 const NotFound = () => {
 	return (
 		<section className="relative bg-green-600/5">
@@ -15,6 +13,7 @@ const NotFound = () => {
 								/>
 							</a>
 						</div>
+
 						<div className="title-heading text-center my-auto">
 							<img
 								src="assets/images/error.png"
@@ -37,6 +36,7 @@ const NotFound = () => {
 								</a>
 							</div>
 						</div>
+
 						<div className="text-center">
 							<p className="mb-0 text-slate-400">
 								©{" "}
