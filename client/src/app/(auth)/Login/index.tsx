@@ -42,29 +42,31 @@ const LoginPage = () => {
 		startTransition(() => {
 			api.post("/auth/login", data)
 				.then((response) => {
-					if (response.status == 200) {
-						const { data, success } =
-							response.data as ApiResponse<AuthResponse>;
-						if (success) {
-							if (data) {
-								toast.success("Login was successful");
+					if (response.status !== 200) {
+						throw new Error("Invalid username or password");
+					}
 
-								// context.login(data);
-								setSession(data);
-								//check for callbackurl
-								setTimeout(() => {
-									const callback =
-										params.redirect || "/dashboard";
-									redirect(callback);
-								}, 3000);
-							}
+					const { data, success, message } =
+						response.data as ApiResponse<AuthResponse>;
+					if (success) {
+						if (data) {
+							toast.success("Login was successful");
+
+							// context.login(data);
+							setSession(data);
+							//check for callbackurl
+							setTimeout(() => {
+								const callback =
+									params.redirect || "/dashboard";
+								redirect(callback);
+							}, 3000);
 						}
 					} else {
-						throw new Error("Invalid username or password");
+						throw new Error(message);
 					}
 				})
 				.catch((errors) => {
-					toast.error(errors);
+					toast.error(errors.response.data.message);
 				});
 		});
 	};

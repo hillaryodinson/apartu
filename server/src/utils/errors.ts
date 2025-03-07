@@ -1,16 +1,11 @@
 export class AppError extends Error {
 	errorCode: number;
 	statusCode: number;
-	constructor(errorCode: number, message: string) {
+	constructor(errorCode: number, message: string, statusCode?: number) {
 		super(message);
 		this.name = "AppError";
 		this.errorCode = errorCode;
-		this.statusCode = 500;
-
-		if (errorCode < 100) {
-			//validation Errors
-			this.statusCode = 400;
-		}
+		this.statusCode = statusCode ?? 400;
 	}
 }
 

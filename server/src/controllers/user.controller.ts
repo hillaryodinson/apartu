@@ -53,15 +53,22 @@ export const verifyEmail = async (
 		},
 	});
 
-	if (!user)
+	if (
+		!user ||
+		!user.actiTokenExpiredAt ||
+		user.actiTokenExpiredAt < new Date()
+	)
 		throw new AppError(
 			ERROR_CODES.VALIDATION_INVALID_TOKEN,
-			"Invalid activation token"
+			"Invalid activation token or token has expired",
+			400
 		);
 	//if it does remove token from account
 	await db.user.update({
 		data: {
 			actiToken: null,
+			actiTokenExpiredAt: null,
+			activatedAt: new Date(),
 		},
 		where: {
 			id: user.id,

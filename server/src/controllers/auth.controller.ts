@@ -64,7 +64,7 @@ export const login = async (
 		await sendActivationEmail(dbResponse.actiToken, dbResponse);
 		throw new AppError(
 			ERROR_CODES.USER_ACCOUNT_NOT_ACTIVE,
-			"This account has not been activated"
+			"This account has not been activated. Please check email for activation message and try again"
 		);
 	}
 
