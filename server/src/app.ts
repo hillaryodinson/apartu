@@ -7,7 +7,7 @@ import { specs } from "./swagger";
 import initRoutes from "./routes/default";
 import path from "path";
 import dotenv from "dotenv";
-import { errorHandler } from "./middlewares/middleware";
+import { errorHandler, limiter } from "./middlewares/middleware";
 dotenv.config();
 
 export const InitApp = () => {
@@ -29,6 +29,8 @@ export const InitApp = () => {
 			allowedHeaders: ["Content-Type"],
 		})
 	);
+
+	app.use(limiter);
 
 	app.get("/", (req: Request, res: Response) => {
 		res.render("index");
