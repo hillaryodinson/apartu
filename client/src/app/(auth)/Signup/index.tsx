@@ -7,14 +7,12 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useTransition } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
 const SignUpPage = () => {
-	const params = useParams();
 	const redirect = useNavigate();
-	const setSession = useUserStore((state) => state.setSession);
 	const [isLoading, startTransition] = useTransition();
 	const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
@@ -42,28 +40,22 @@ const SignUpPage = () => {
 		startTransition(() => {
 			api.post("/user/register", data)
 				.then((response) => {
-					if (response.status == 200) {
-						const { data, success } =
-							response.data as ApiResponse<AuthResponse>;
-						if (success) {
-							if (data) {
-								toast.success(
-									"Account was created please check email for activation link"
-								);
+					if (response.status !== 201 && response.status !== 200) {
+						throw new Error(
+							"An error occured. Account not created please contact administrator"
+						);
+					}
 
-								// context.login(data);
-								setSession(data);
+					const { success, message } =
+						response.data as ApiResponse<AuthResponse>;
 
-								//check for callbackurl
-								setTimeout(() => {
-									const callback =
-										params.redirect || "/dashboard";
-									redirect(callback);
-								}, 3000);
-							}
-						}
+					if (success) {
+						toast.success(
+							"Account was created please check email for activation link"
+						);
+						redirect("/login");
 					} else {
-						throw new Error("Invalid username or password");
+						toast.error(message);
 					}
 				})
 				.catch((errors) => {
