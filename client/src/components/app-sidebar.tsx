@@ -49,8 +49,8 @@ const data = {
 			icon: Bot,
 			items: [
 				{
-					title: "Apartments",
-					url: "#",
+					title: "Properties",
+					url: "/dashboard/properties",
 				},
 				{
 					title: "Units",
