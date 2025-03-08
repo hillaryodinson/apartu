@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { PropertySchema } from "./zod";
+
 export type ApiResponse<T> = {
 	success: boolean;
 	message: string;
@@ -18,11 +21,4 @@ export type UserType = {
 	created_at: string;
 };
 
-export type PropertyType = {
-	id: string;
-	name: string;
-	address: string;
-	type: string;
-	country: string;
-	state: string;
-};
+export type PropertyType = z.infer<typeof PropertySchema>;

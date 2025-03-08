@@ -1,4 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+
 import HomePage from "./app/HomePage";
 import LoginPage from "./app/(auth)/Login";
 import SignUpPage from "./app/(auth)/Signup";
@@ -70,9 +72,12 @@ function App() {
 		},
 	]);
 
+	const queryClient = new QueryClient();
 	return (
 		<AuthProvider>
-			<RouterProvider router={routes} />
+			<QueryClientProvider client={queryClient}>
+				<RouterProvider router={routes} />
+			</QueryClientProvider>
 			<ToastContainer />
 		</AuthProvider>
 	);

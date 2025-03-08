@@ -38,7 +38,7 @@ export const getColumns = ({
 			);
 		},
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Center" />
+			<DataTableColumnHeader column={column} title="Property" />
 		),
 	},
 	{
