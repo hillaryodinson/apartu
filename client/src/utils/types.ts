@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PropertySchema } from "./zod";
+import { PropertySchema, UnitSchema } from "./zod";
 
 export type ApiResponse<T> = {
 	success: boolean;
@@ -22,3 +22,4 @@ export type UserType = {
 };
 
 export type PropertyType = z.infer<typeof PropertySchema>;
+export type UnitType = z.infer<typeof UnitSchema>;

@@ -11,9 +11,12 @@ import { Modal } from "@/components/site/modal/modal";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyProperties } from "./action";
 import AddPropertyForm from "./components/AddPropertyForm";
+import AddUnitForm from "./components/AddUnitForm";
 
 const MyPropertiesPage = () => {
 	const [openModal, setOpenModal] = useState<boolean>(false);
+	const [openModal1, setOpenModal1] = useState<boolean>(false);
+
 	const columns = useMemo(
 		() =>
 			getColumns({
@@ -43,7 +46,7 @@ const MyPropertiesPage = () => {
 								<Button
 									className="!rounded-lg bg-slate-900"
 									size={"sm"}
-									onClick={() => setOpenModal(true)}>
+									onClick={() => setOpenModal1(true)}>
 									<PlusCircle /> Add Property
 								</Button>
 							</div>
@@ -60,6 +63,13 @@ const MyPropertiesPage = () => {
 			</div>
 			<Modal title="Add Property" open={openModal} setOpen={setOpenModal}>
 				<AddPropertyForm />
+			</Modal>
+
+			<Modal
+				title="Property Listing Details"
+				open={openModal1}
+				setOpen={setOpenModal1}>
+				<AddUnitForm />
 			</Modal>
 		</>
 	);
