@@ -8,6 +8,8 @@ import initRoutes from "./routes/default";
 import path from "path";
 import dotenv from "dotenv";
 import { errorHandler, limiter } from "./middlewares/middleware";
+import fs from "fs";
+
 dotenv.config();
 
 export const InitApp = () => {
@@ -29,6 +31,10 @@ export const InitApp = () => {
 			allowedHeaders: ["Content-Type"],
 		})
 	);
+
+	if (!fs.existsSync("uploads")) {
+		fs.mkdirSync("uploads");
+	}
 
 	app.use(limiter);
 

@@ -15,6 +15,8 @@ import {
 import { ZodError } from "zod";
 import { AppError, ERROR_CODES } from "../utils/errors";
 import rateLimit from "express-rate-limit";
+import multer from "multer";
+import path from "path";
 
 export const authorize = (req: Request, res: Response, next: NextFunction) => {
 	//get the token from header
@@ -96,3 +98,15 @@ export const limiter = rateLimit({
 		});
 	},
 });
+
+const storage = multer.diskStorage({
+	destination: (req: Request, file, cb) => {
+		cb(null, "uploads/");
+	},
+	filename: (req, file, cb) => {
+		const ext = path.extname(file.originalname);
+		const filename = Date.now() + ext;
+		cb(null, filename);
+	},
+});
+export const upload = multer({ storage });

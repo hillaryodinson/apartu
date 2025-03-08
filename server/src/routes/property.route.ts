@@ -1,22 +1,22 @@
 import { Request, Response, Router } from "express";
 import {
-  addProperty,
-  addSubUnit,
-  addUnit,
-  deleteProperty,
-  deleteUnit,
-  getOwnerProperties,
-  getProperties,
-  getUnit,
-  updateProperty,
-  updateUnit,
-  updateUnitAvailability,
+	addProperty,
+	addSubUnit,
+	addUnit,
+	deleteProperty,
+	deleteUnit,
+	getOwnerProperties,
+	getProperties,
+	getUnit,
+	updateProperty,
+	updateUnit,
+	updateUnitAvailability,
 } from "../controllers/property.controller";
 import {
-  CustomResponse,
-  TypedRequest,
-  TypedRequestBody,
-  TypedResponse,
+	CustomResponse,
+	TypedRequest,
+	TypedRequestBody,
+	TypedResponse,
 } from "../configs/requests";
 import { PropertyType } from "../configs/types";
 import { authorize, tryCatch } from "../middlewares/middleware";
@@ -107,11 +107,11 @@ const PropertyRoute = Router();
  *                   description: An object containing the errors
  */
 PropertyRoute.post(
-  "/",
-  authorize,
-  tryCatch((req, res) =>
-    addProperty(req as TypedRequest<{}, PropertyType>, res)
-  )
+	"/",
+	authorize,
+	tryCatch((req, res) =>
+		addProperty(req as TypedRequest<{}, PropertyType>, res)
+	)
 );
 
 /**
@@ -126,13 +126,24 @@ PropertyRoute.post(
  *     description: Gets all properties owned by the current user
  *     responses:
  *       200:
- *         description: The properties owned by the current user
+ *         description: The property was fetched successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Property'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the property was retrieved successfully
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *                   example: Property fetched successfully
+ *                 data:
+ *                   description: An array of properties for the current owner
+ *                   type: array
+ *                   items:
+ *                      $ref: '#/components/schemas/Property'
  *       401:
  *         description: Error Unauthorized
  *         content:
@@ -431,7 +442,11 @@ PropertyRoute.post("/:propertyId/unit", tryCatch(addUnit));
  *                   type: object
  *                   description: An object containing the errors
  */
-PropertyRoute.put("/unit/:unitId/availability", authorize, tryCatch(updateUnitAvailability));
+PropertyRoute.put(
+	"/unit/:unitId/availability",
+	authorize,
+	tryCatch(updateUnitAvailability)
+);
 
 /**
  * @swagger

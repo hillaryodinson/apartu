@@ -20,6 +20,10 @@ const options = {
 				description: "Authentication related endpoints",
 			},
 			{
+				name: "File",
+				description: "File and upload related endpoints",
+			},
+			{
 				name: "Property",
 				description: "Property related endpoints",
 			},
@@ -37,29 +41,16 @@ const options = {
 				},
 			},
 			schemas: {
-				User: {
+				File: {
 					type: "object",
 					properties: {
-						name: {
+						main: {
 							type: "string",
-							example: "Jane Samuel",
-							description: "Full name of the user",
+							example: "/uploads/main/1629278998877.jpg",
 						},
-						email: {
+						thumb: {
 							type: "string",
-							example: "jane.samuel@gmail.com",
-							description: "The email address of the user",
-						},
-						password: {
-							type: "string",
-							example: "password",
-							description: "The password of the user",
-						},
-						role: {
-							type: "string",
-							enum: ["landlord", "caretaker", "admin", "tenant"],
-							example: "tenant",
-							description: "The role of the user",
+							example: "/uploads/thumb/1629278998877.jpg",
 						},
 					},
 				},
@@ -119,6 +110,32 @@ const options = {
 							type: "string",
 							enum: ["AVAILABLE", "RENTED"],
 							example: "AVAILABLE",
+						},
+					},
+				},
+				User: {
+					type: "object",
+					properties: {
+						name: {
+							type: "string",
+							example: "Jane Samuel",
+							description: "Full name of the user",
+						},
+						email: {
+							type: "string",
+							example: "jane.samuel@gmail.com",
+							description: "The email address of the user",
+						},
+						password: {
+							type: "string",
+							example: "password",
+							description: "The password of the user",
+						},
+						role: {
+							type: "string",
+							enum: ["landlord", "caretaker", "admin", "tenant"],
+							example: "tenant",
+							description: "The role of the user",
 						},
 					},
 				},
