@@ -1,7 +1,7 @@
 import Express from "express";
-import { tryCatch, upload } from "../middlewares/middleware";
+import { authorize, tryCatch, upload } from "../middlewares/middleware";
 import { deleteFile, uploadFile } from "../controllers/file.controller";
-const FileRoutes = Express.Router();
+const FileRoute = Express.Router();
 
 /**
  * @swagger
@@ -51,7 +51,12 @@ const FileRoutes = Express.Router();
  *                   type: string
  *                   example: File was not uploaded
  */
-FileRoutes.post("/upload", upload.array("image", 15), tryCatch(uploadFile));
+FileRoute.post(
+	"/upload",
+	authorize,
+	upload.array("images", 15),
+	tryCatch(uploadFile)
+);
 
 /**
  * @swagger
@@ -102,6 +107,6 @@ FileRoutes.post("/upload", upload.array("image", 15), tryCatch(uploadFile));
  *                   type: string
  *                   example: File was not deleted
  */
-FileRoutes.delete("/delete", tryCatch(deleteFile));
+FileRoute.delete("/delete", tryCatch(deleteFile));
 
-export default FileRoutes;
+export default FileRoute;

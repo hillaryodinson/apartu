@@ -14,6 +14,7 @@ export const uploadFile = async (
 	res: TypedResponse<CustomResponse>
 ) => {
 	const files = req.files as Express.Multer.File[];
+	console.log(files);
 
 	if (!files || files.length === 0) {
 		throw new AppError(
@@ -44,8 +45,8 @@ export const uploadFile = async (
 
 			// Return paths for thumb and main images
 			return {
-				thumb: `/uploads/thumb/${file.filename}`,
-				main: `/uploads/main/${file.filename}`,
+				thumb: `${process.env.BASE_URL}/uploads/thumb/${file.filename}`,
+				main: `${process.env.BASE_URL}/uploads/main/${file.filename}`,
 			};
 		})
 	);

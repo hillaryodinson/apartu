@@ -101,7 +101,7 @@ export const limiter = rateLimit({
 
 const storage = multer.diskStorage({
 	destination: (req: Request, file, cb) => {
-		cb(null, "uploads/");
+		cb(null, "uploads/original/");
 	},
 	filename: (req, file, cb) => {
 		const ext = path.extname(file.originalname);
