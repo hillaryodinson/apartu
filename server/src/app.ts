@@ -15,8 +15,13 @@ dotenv.config();
 export const InitApp = () => {
 	const app = express();
 	app.set("view engine", "ejs");
+	// Serve static files (images, etc.) from the 'uploads' folder
+	app.use("/uploads", express.static(path.join(__dirname, "../", "uploads")));
 	app.set("views", path.join(__dirname, "/views"));
 	app.use(bodyParser.urlencoded({ extended: true }));
+
+	console.log("Current directory:", __dirname);
+
 	app.use(bodyParser.json());
 	app.use(
 		helmet({
@@ -28,12 +33,13 @@ export const InitApp = () => {
 		cors({
 			origin: "*",
 			methods: ["GET", "POST", "PUT", "DELETE"],
-			allowedHeaders: ["Content-Type"],
+			allowedHeaders: ["Content-Type", "Authorization"],
 		})
 	);
 
 	if (!fs.existsSync("uploads")) {
 		fs.mkdirSync("uploads");
+		fs.mkdirSync("uploads/original");
 	}
 
 	app.use(limiter);
