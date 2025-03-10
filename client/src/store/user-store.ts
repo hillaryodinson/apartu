@@ -9,15 +9,35 @@ interface UserStoreState {
 	token: string | null;
 	setSession: (data: AuthResponse) => void;
 	logOut: () => void;
+	validateToken: () => void;
 }
-const initialState: Omit<UserStoreState, "setSession" | "logOut"> = {
+
+const initialState: Omit<
+	UserStoreState,
+	"setSession" | "logOut" | "validateToken"
+> = {
 	user: null,
 	token: null,
 	isAuthenticated: false,
 };
+
+const validateToken = (token: string | null): boolean => {
+	// Implement your token validation logic here
+	// For example, you can check if the token is expired
+	if (!token) return false;
+	// Assuming the token is a JWT, you can decode and check its expiration
+	try {
+		const payload = JSON.parse(atob(token.split(".")[1]));
+		return payload.exp > Date.now() / 1000;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+};
+
 export const useUserStore = create<UserStoreState>()(
 	persist(
-		(set) => ({
+		(set, get) => ({
 			...initialState,
 			setSession: (data: AuthResponse) => {
 				set({
@@ -29,10 +49,23 @@ export const useUserStore = create<UserStoreState>()(
 			logOut: () => {
 				set(initialState);
 			},
+			validateToken: () => {
+				const token = get().token;
+				if (validateToken(token)) {
+					set({ isAuthenticated: true });
+				} else {
+					set(initialState);
+				}
+			},
 		}),
 		{
 			name: "user-store",
 			storage: createJSONStorage(() => localStorage),
+			onRehydrateStorage: () => (state) => {
+				if (state) {
+					state.validateToken();
+				}
+			},
 		}
 	)
 );

@@ -14,6 +14,7 @@ api.interceptors.request.use(
 	(config) => {
 		// Get the token from localStorage
 		const token = userStore.token;
+		console.log("TOKEN", token);
 
 		// If the token exists, add it to the Authorization header
 		if (token) {

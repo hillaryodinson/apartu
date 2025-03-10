@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import BackendLayout from "./components/layout/backend";
 import AccountActivationPage from "./app/(auth)/AccountActivation";
 import MyPropertiesPage from "./app/(account)/client/Properties";
+import MyPropertyDetailsPage from "./app/(account)/client/PropertyDetail";
 
 function App() {
 	const routes = createBrowserRouter([
@@ -63,6 +64,10 @@ function App() {
 				{
 					path: "/dashboard/properties",
 					element: <MyPropertiesPage />,
+				},
+				{
+					path: "/dashboard/properties/:propertyId",
+					element: <MyPropertyDetailsPage />,
 				},
 			],
 		},

@@ -44,7 +44,11 @@ export const getOwnerProperties = async (req: Request, res: Response) => {
 			ownerId: owner.id,
 		},
 		include: {
-			units: true,
+			units: {
+				include: {
+					images: true,
+				},
+			},
 		},
 	});
 	res.status(200).json({

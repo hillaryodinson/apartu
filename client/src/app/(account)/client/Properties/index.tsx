@@ -12,17 +12,25 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMyProperties } from "./action";
 import AddPropertyForm from "./components/AddPropertyForm";
 import AddUnitForm from "./components/AddUnitForm";
+import { usePropertyStore } from "@/store/property-store";
+import { useNavigate } from "react-router-dom";
 
 const MyPropertiesPage = () => {
 	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [openModal1, setOpenModal1] = useState<boolean>(false);
 	const [propertyId, setPropertyId] = useState<string | undefined>(undefined);
+	const setSelectedProperty = usePropertyStore(
+		(state) => state.setSelectedProperty
+	);
+	const navigate = useNavigate();
 
 	const columns = useMemo(
 		() =>
 			getColumns({
 				onView: (data: PropertyType) => {
 					console.log(data);
+					setSelectedProperty(data);
+					navigate(`/dashboard/properties/${data.id}`);
 				},
 				onDelete: (data: PropertyType) => {
 					console.log(data);
@@ -34,7 +42,7 @@ const MyPropertiesPage = () => {
 					console.log(data);
 				},
 			}),
-		[]
+		[navigate, setSelectedProperty]
 	);
 
 	const query = useQuery({

@@ -13,11 +13,10 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
-import { UnitType } from "@/utils/types";
 import { UnitSchema } from "@/utils/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import CurrencyInput from "@/components/site/currency-input";
-import { toCurrency } from "@/utils/helper";
+import { getCycleLabel, toCurrency } from "@/utils/helper";
 import {
 	Select,
 	SelectTrigger,
@@ -29,6 +28,7 @@ import DropzoneInput from "@/components/site/dropzone";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/utils/api";
 import { toast } from "react-toastify";
+import { z } from "zod";
 
 interface AddUnitFormProps {
 	propertyId: string;
@@ -49,7 +49,7 @@ const AddUnitForm = ({ propertyId, onSuccessFn }: AddUnitFormProps) => {
 		cycle: "YEARLY",
 	});
 
-	const initialValues: UnitType = {
+	const initialValues: z.infer<typeof UnitSchema> = {
 		name: "",
 		type: "ENTIRE_PROPERTY",
 		rentPrice: 10,
@@ -63,14 +63,14 @@ const AddUnitForm = ({ propertyId, onSuccessFn }: AddUnitFormProps) => {
 		],
 	};
 
-	const form = useForm<UnitType>({
+	const form = useForm<z.infer<typeof UnitSchema>>({
 		resolver: zodResolver(UnitSchema),
 		defaultValues: initialValues,
 	});
 
 	const createUnit = useMutation({
 		mutationKey: ["createUnit"],
-		mutationFn: async (data: UnitType) => {
+		mutationFn: async (data: z.infer<typeof UnitSchema>) => {
 			const response = await api.post(`/property/${propertyId}/unit`, {
 				...data,
 				availability: "AVAILABLE",
@@ -87,24 +87,11 @@ const AddUnitForm = ({ propertyId, onSuccessFn }: AddUnitFormProps) => {
 		},
 	});
 
-	const onSubmit = (data: UnitType) => {
+	const onSubmit = (data: z.infer<typeof UnitSchema>) => {
 		startTransition(() => {
 			createUnit.mutate(data);
 		});
 	};
-
-	function getCycleLabel(data: {
-		duration: number;
-		cycle: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
-	}) {
-		const cycles = {
-			DAILY: data.duration > 1 ? "days" : "day",
-			WEEKLY: data.duration > 1 ? "weeks" : "week",
-			MONTHLY: data.duration > 1 ? "months" : "month",
-			YEARLY: data.duration > 1 ? "years" : "year",
-		};
-		return cycles[data.cycle] || data.cycle;
-	}
 
 	return (
 		<Form {...form}>

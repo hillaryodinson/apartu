@@ -1,6 +1,3 @@
-import { z } from "zod";
-import { UnitSchema } from "./zod";
-
 export type ApiResponse<T> = {
 	success: boolean;
 	message: string;
@@ -21,7 +18,25 @@ export type UserType = {
 	created_at: string;
 };
 
-export type UnitType = z.infer<typeof UnitSchema>;
+export type UnitType = {
+	id: string;
+	name: string;
+	rentPrice: number;
+	rentDuration: number;
+	rentCycle: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+	type: string;
+	images: ImageType[];
+	parentUnit: string | null;
+	subUnits: UnitType[];
+	availability: string;
+	createdAt: string;
+	updatedAt: string;
+};
+export type ImageType = {
+	id?: string;
+	image: string;
+	thumb: string;
+};
 export type PropertyType = {
 	address: string;
 	country: string;
