@@ -24,6 +24,15 @@ const MyPropertiesPage = () => {
 				onView: (data: PropertyType) => {
 					console.log(data);
 				},
+				onDelete: (data: PropertyType) => {
+					console.log(data);
+				},
+				onAddUnit: (data: PropertyType) => {
+					console.log(data);
+				},
+				onEdit: (data: PropertyType) => {
+					console.log(data);
+				},
 			}),
 		[]
 	);
