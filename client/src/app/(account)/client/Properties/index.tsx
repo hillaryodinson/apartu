@@ -16,6 +16,7 @@ import AddUnitForm from "./components/AddUnitForm";
 const MyPropertiesPage = () => {
 	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [openModal1, setOpenModal1] = useState<boolean>(false);
+	const [propertyId, setPropertyId] = useState<string | undefined>(undefined);
 
 	const columns = useMemo(
 		() =>
@@ -46,7 +47,7 @@ const MyPropertiesPage = () => {
 								<Button
 									className="!rounded-lg bg-slate-900"
 									size={"sm"}
-									onClick={() => setOpenModal1(true)}>
+									onClick={() => setOpenModal(true)}>
 									<PlusCircle /> Add Property
 								</Button>
 							</div>
@@ -62,14 +63,23 @@ const MyPropertiesPage = () => {
 				</div>
 			</div>
 			<Modal title="Add Property" open={openModal} setOpen={setOpenModal}>
-				<AddPropertyForm />
+				<AddPropertyForm
+					onSuccessFn={(id) => {
+						setOpenModal(false);
+						setOpenModal1(true);
+						setPropertyId(id);
+					}}
+				/>
 			</Modal>
 
 			<Modal
 				title="Property Listing Details"
 				open={openModal1}
 				setOpen={setOpenModal1}>
-				<AddUnitForm />
+				<AddUnitForm
+					propertyId={propertyId ?? ""}
+					onSuccessFn={() => setOpenModal1(false)}
+				/>
 			</Modal>
 		</>
 	);

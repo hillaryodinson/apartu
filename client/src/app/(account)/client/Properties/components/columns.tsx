@@ -42,21 +42,27 @@ export const getColumns = ({
 		),
 	},
 	{
-		accessorKey: "country",
+		accessorKey: "type",
 		cell: ({ row }) => {
-			return <div className="font-medium">{row.original.country}</div>;
+			return <div className="font-medium">{row.original.type}</div>;
 		},
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Country" />
+			<DataTableColumnHeader column={column} title="Type" />
 		),
 	},
 	{
-		accessorKey: "state",
+		accessorKey: "units",
 		cell: ({ row }) => {
-			return <div className="font-medium">{row.original.state}</div>;
+			//const col = row.original.units.length;
+			return (
+				<div className="font-medium">{row.original.units.length}</div>
+			);
 		},
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="State" />
+			<DataTableColumnHeader
+				column={column}
+				title="Total Units/Apartment"
+			/>
 		),
 	},
 

@@ -15,6 +15,7 @@ dotenv.config();
 export const InitApp = () => {
 	const app = express();
 	app.set("view engine", "ejs");
+
 	// Serve static files (images, etc.) from the 'uploads' folder
 	app.use("/uploads", express.static(path.join(__dirname, "../", "uploads")));
 	app.set("views", path.join(__dirname, "/views"));

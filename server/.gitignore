@@ -1,3 +1,7 @@
 node_modules
+uploads
+dist
+localhost-key.pem
+localhost.pem
 # Keep environment variables out of version control
 .env

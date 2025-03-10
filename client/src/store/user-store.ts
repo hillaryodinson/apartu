@@ -10,7 +10,7 @@ interface UserStoreState {
 	setSession: (data: AuthResponse) => void;
 	logOut: () => void;
 }
-const initialState = {
+const initialState: Omit<UserStoreState, "setSession" | "logOut"> = {
 	user: null,
 	token: null,
 	isAuthenticated: false,
@@ -36,3 +36,5 @@ export const useUserStore = create<UserStoreState>()(
 		}
 	)
 );
+
+export const userStore = useUserStore.getState();

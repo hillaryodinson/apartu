@@ -12,8 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
-// import { useMutation } from "@tanstack/react-query";
-// import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { UnitType } from "@/utils/types";
 import { UnitSchema } from "@/utils/zod";
@@ -27,8 +25,17 @@ import {
 	SelectContent,
 	SelectItem,
 } from "@/components/ui/select";
+import DropzoneInput from "@/components/site/dropzone";
+import { useMutation } from "@tanstack/react-query";
+import api from "@/utils/api";
+import { toast } from "react-toastify";
 
-const AddUnitForm = () => {
+interface AddUnitFormProps {
+	propertyId: string;
+	onSuccessFn: () => void;
+}
+
+const AddUnitForm = ({ propertyId, onSuccessFn }: AddUnitFormProps) => {
 	const [isLoading, startTransition] = useTransition();
 	type DataType = {
 		amount: number;
@@ -42,21 +49,47 @@ const AddUnitForm = () => {
 		cycle: "YEARLY",
 	});
 
+	const initialValues: UnitType = {
+		name: "",
+		type: "ENTIRE_PROPERTY",
+		rentPrice: 10,
+		rentDuration: 1,
+		rentCycle: "YEARLY",
+		images: [
+			{
+				thumb: "",
+				image: "",
+			},
+		],
+	};
+
 	const form = useForm<UnitType>({
 		resolver: zodResolver(UnitSchema),
-		defaultValues: {
-			name: "",
-			type: undefined,
-			rentPrice: 10,
-			rentDuration: 1,
-			rentCycle: "YEARLY",
-			availability: undefined,
+		defaultValues: initialValues,
+	});
+
+	const createUnit = useMutation({
+		mutationKey: ["createUnit"],
+		mutationFn: async (data: UnitType) => {
+			const response = await api.post(`/property/${propertyId}/unit`, {
+				...data,
+				availability: "AVAILABLE",
+			});
+			return response.data;
+		},
+		onError: (error) => {
+			console.log(error);
+		},
+		onSuccess: (data) => {
+			console.log(data);
+			toast.success("Unit created successfully");
+			form.reset(initialValues);
 		},
 	});
 
 	const onSubmit = (data: UnitType) => {
 		startTransition(() => {
-			console.log(data);
+			createUnit.mutate(data);
 		});
 	};
 
@@ -75,7 +108,10 @@ const AddUnitForm = () => {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className="space-y-10"
+				method="POST">
 				<div>
 					<FormField
 						control={form.control}
@@ -153,14 +189,14 @@ const AddUnitForm = () => {
 
 				<div className="flex flex-col space-y-4">
 					<FormDescription className="font-medium text-slate-900">
-						<p>
+						<small className="text-lg">
 							I want my tenant to pay {toCurrency(data.amount)}{" "}
 							every {data.duration}{" "}
 							{getCycleLabel({
 								duration: data.duration,
 								cycle: data.cycle,
 							})}
-						</p>
+						</small>
 					</FormDescription>
 
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -262,21 +298,42 @@ const AddUnitForm = () => {
 						/>
 					</div>
 				</div>
-
+				<FormField
+					control={form.control}
+					name="images"
+					render={() => (
+						<DropzoneInput
+							onChange={(value) => {
+								form.setValue(
+									"images",
+									value.map((file) => ({
+										image: file.image,
+										thumb: file.thumb,
+									}))
+								);
+							}}
+						/>
+					)}
+				/>
 				<div className="flex justify-between">
 					<Button
-						type="submit"
-						disabled={isLoading}
-						variant={"outline"}>
+						type="button"
+						// disabled={isLoading}
+						variant={"outline"}
+						onClick={() => onSuccessFn()}>
 						{isLoading && (
 							<Loader2 className="mr-2 h-4 w-4 stroke-green-500 animate-spin" />
 						)}{" "}
 						{isLoading ? "Saving..." : "Skip Step"}
 					</Button>
-					<div className="flex">
+					<div className="flex space-x-2">
 						<Button
-							type="submit"
+							type="button"
 							disabled={isLoading}
+							onClick={() => {
+								form.handleSubmit(onSubmit)();
+								onSuccessFn();
+							}}
 							variant={"secondary"}>
 							{isLoading && (
 								<Loader2 className="mr-2 h-4 w-4 stroke-green-500 animate-spin" />
@@ -286,7 +343,7 @@ const AddUnitForm = () => {
 						<Button type="submit" disabled={isLoading}>
 							{isLoading && (
 								<Loader2 className="mr-2 h-4 w-4 stroke-green-500 animate-spin" />
-							)}{" "}
+							)}
 							{isLoading
 								? "Saving..."
 								: "Save and add another Unit"}

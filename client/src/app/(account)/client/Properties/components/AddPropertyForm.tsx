@@ -13,22 +13,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
-// import { useMutation } from "@tanstack/react-query";
-// import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { PropertyType } from "@/utils/types";
+import { ApiResponse, PropertyType } from "@/utils/types";
 import { PropertySchema } from "@/utils/zod";
 import LocationSelector, {
 	CountryProps,
 	StateProps,
 } from "@/components/site/location-picker";
+import api from "@/utils/api";
+import { toast } from "react-toastify";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { z } from "zod";
 
-const AddPropertyForm = () => {
+const AddPropertyForm = ({
+	onSuccessFn,
+}: {
+	onSuccessFn: (data: string) => void;
+}) => {
 	const [countryName, setCountryName] = useState("");
 	const [stateName, setStateName] = useState("");
 	const [isLoading, startTransition] = useTransition();
+	const queryClient = useQueryClient();
 
-	const form = useForm<PropertyType>({
+	const form = useForm<z.infer<typeof PropertySchema>>({
 		resolver: zodResolver(PropertySchema),
 		defaultValues: {
 			name: "",
@@ -39,9 +47,32 @@ const AddPropertyForm = () => {
 		},
 	});
 
-	const onSubmit = (data: PropertyType) => {
+	const createProperty = useMutation({
+		mutationFn: async (data: z.infer<typeof PropertySchema>) => {
+			const response = await api.post("/property", data);
+			const result = (await response.data) as ApiResponse<PropertyType>;
+			if (result.success) {
+				return result.data;
+			}
+
+			throw new Error(result.message);
+		},
+		onSuccess: (data) => {
+			toast.success("Property created successfully");
+			form.reset();
+			if (data) onSuccessFn(data.id);
+			queryClient.invalidateQueries({
+				queryKey: ["fetch_my_properties"],
+			});
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const onSubmit = (data: z.infer<typeof PropertySchema>) => {
 		startTransition(() => {
-			console.log(data);
+			createProperty.mutate(data);
 		});
 	};
 
@@ -49,7 +80,54 @@ const AddPropertyForm = () => {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="space-y-4 py-10">
+				className="space-y-4 py-10"
+				method="POST">
+				<div>
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem className="space-y-2">
+								<FormLabel>
+									What type of property are you offering?
+								</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex space-y-0">
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="APARTMENT_COMPLEX" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Apartment Complex
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="HOUSE" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												House
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="ESTATE" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Estate
+											</FormLabel>
+										</FormItem>
+									</RadioGroup>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
+
 				<FormField
 					control={form.control}
 					name="name"

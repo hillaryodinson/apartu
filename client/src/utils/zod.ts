@@ -23,11 +23,15 @@ export const PropertySchema = z.object({
 	address: z.string(),
 });
 
+export const ImageSchema = z.object({
+	image: z.string(),
+	thumb: z.string(),
+});
 export const UnitSchema = z.object({
 	name: z.string(),
 	type: z.enum(["ENTIRE_PROPERTY", "APARTMENT", "ROOM"]),
 	rentPrice: z.coerce.number(),
 	rentDuration: z.coerce.number(),
 	rentCycle: z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]),
-	availability: z.enum(["AVAILABLE", "RENTED"]),
+	images: z.array(ImageSchema).optional(),
 });

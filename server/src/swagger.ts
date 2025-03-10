@@ -111,6 +111,12 @@ const options = {
 							enum: ["AVAILABLE", "RENTED"],
 							example: "AVAILABLE",
 						},
+						images: {
+							type: "array",
+							items: {
+								$ref: "#/components/schemas/File",
+							},
+						},
 					},
 				},
 				User: {
