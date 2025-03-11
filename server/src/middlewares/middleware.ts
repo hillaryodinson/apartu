@@ -26,11 +26,25 @@ export const authorize = (req: Request, res: Response, next: NextFunction) => {
 
 	if (!token)
 		return next(
-			new AppError(ERROR_CODES.VALIDATION_INVALID_TOKEN, "Unauthorized")
+			new AppError(
+				ERROR_CODES.VALIDATION_INVALID_TOKEN,
+				"Unauthorized",
+				401
+			)
 		);
 
-	const tokenInfo = JWT.verify(token, process.env.JWT_SECRET as string);
-	(req as RequestWithUser).user = tokenInfo as AccessTokenType;
+	try {
+		const tokenInfo = JWT.verify(token, process.env.JWT_SECRET as string);
+		(req as RequestWithUser).user = tokenInfo as AccessTokenType;
+	} catch (error) {
+		return next(
+			new AppError(
+				ERROR_CODES.VALIDATION_INVALID_TOKEN,
+				"Unauthorized",
+				401
+			)
+		);
+	}
 
 	next();
 };
