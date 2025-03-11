@@ -78,6 +78,12 @@ const options = {
 							type: "string",
 							example: "CA",
 						},
+						units: {
+							type: "array",
+							items: {
+								$ref: "#/components/schemas/Unit",
+							},
+						},
 					},
 				},
 				Unit: {
@@ -91,6 +97,55 @@ const options = {
 							type: "string",
 							enum: ["ENTIRE_PROPERTY", "APARTMENT", "ROOM"],
 							example: "ENTIRE_PROPERTY",
+						},
+						rentPrice: {
+							type: "number",
+							example: 1000,
+						},
+						rentDuration: {
+							type: "number",
+							description: "How long before rent is due in days",
+							example: 365,
+						},
+						rentCycle: {
+							type: "string",
+							enum: ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
+							example: "DAILY",
+						},
+						availability: {
+							type: "string",
+							enum: ["AVAILABLE", "RENTED"],
+							example: "AVAILABLE",
+						},
+						images: {
+							type: "array",
+							items: {
+								$ref: "#/components/schemas/File",
+							},
+						},
+						subUnits: {
+							type: "array",
+							items: {
+								$ref: "#/components/schemas/SubUnit",
+							},
+						},
+					},
+				},
+				SubUnit: {
+					type: "object",
+					properties: {
+						name: {
+							type: "string",
+							example: "Room 1",
+						},
+						type: {
+							type: "string",
+							enum: ["ENTIRE_PROPERTY", "APARTMENT", "ROOM"],
+							example: "ENTIRE_PROPERTY",
+						},
+						parentUnit: {
+							type: "string",
+							example: "3c8ce92b-a57b-4838-84d8-8063a7cbed24",
 						},
 						rentPrice: {
 							type: "number",

@@ -78,6 +78,33 @@ export const getProperties = async (req: Request, res: Response) => {
 	});
 };
 
+export const getSingleProperty = async (req: Request, res: Response) => {
+	const request = req as TypedRequest<{ propertyId: string }>;
+	const params = request.params;
+	const properties = await db.property.findFirst({
+		where: {
+			id: params.propertyId,
+		},
+		include: {
+			units: {
+				include: {
+					images: true,
+					parentUnit: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+		},
+	});
+	res.status(200).json({
+		success: true,
+		message: "Properties fetched successfully",
+		data: properties,
+	});
+};
+
 export const deleteProperty = async (req: Request, res: Response) => {
 	const request = req as TypedRequest<{ propertyId: string }>;
 	const params = request.params;

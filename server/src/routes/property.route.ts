@@ -7,6 +7,7 @@ import {
 	deleteUnit,
 	getOwnerProperties,
 	getProperties,
+	getSingleProperty,
 	getUnit,
 	updateProperty,
 	updateUnit,
@@ -198,6 +199,48 @@ PropertyRoute.get("/", authorize, tryCatch(getOwnerProperties));
  *                   description: An object containing the errors
  */
 PropertyRoute.get("/all", tryCatch(getProperties));
+
+/**
+ * @swagger
+ * /property/{propertyId}:
+ *   get:
+ *     tags:
+ *       - Property
+ *     summary: Gets a single property by id
+ *     description: Gets a single property by id
+ *     parameters:
+ *       - in: path
+ *         name: propertyId
+ *         required: true
+ *         type: string
+ *         description: The ID of the property to update
+ *     responses:
+ *       200:
+ *         description: A single property
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Property'
+ *       401:
+ *         description: Error Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the properties were fetched successfully
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *                 errors:
+ *                   type: object
+ *                   description: An object containing the errors
+ */
+
+PropertyRoute.get("/:propertyId", tryCatch(getSingleProperty));
 
 /**
  * @swagger
