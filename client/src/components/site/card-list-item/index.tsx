@@ -4,6 +4,7 @@ import { UnitType } from "@/utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ImageLightbox from "../lightbox";
+import { getCycleLabel, toCurrency } from "@/utils/helper";
 
 // Apartment card component
 export default function CardListItem({ apartment }: { apartment: UnitType }) {
@@ -11,21 +12,22 @@ export default function CardListItem({ apartment }: { apartment: UnitType }) {
 	console.log(apartment);
 
 	return (
-		<div className="relative overflow-hidden rounded-lg border bg-background shadow-sm">
-			<div className="flex flex-col sm:flex-row">
+		<div className="relative overflow-hidden rounded-lg border bg-background shadow-none">
+			<div className="flex flex-col sm:flex-row h-[150px]">
 				<div
-					className="w-full sm:w-1/3 md:w-1/4 cursor-pointer"
+					className="w-full sm:w-1/3 md:w-[150px] cursor-pointer"
 					onClick={() => setLightboxOpen(true)}>
 					<img
 						src={
-							(apartment.images && apartment.images[0].image) ||
-							"/placeholder.svg"
+							apartment?.images.length > 0
+								? apartment.images[0].image
+								: "/images/default/default.jpg"
 						}
 						alt={apartment.name}
-						className="h-full w-full object-cover transition-transform hover:scale-105"
+						className="h-[150px] w-[150px] object-cover transition-transform hover:scale-105"
 					/>
 					<div className="absolute bottom-2 left-2 rounded bg-background/80 px-2 py-1 text-xs backdrop-blur-sm">
-						{apartment.images.length} photos
+						{apartment?.images.length ?? 0} photos
 					</div>
 				</div>
 				<div className="relative flex-1 p-4">
@@ -44,12 +46,36 @@ export default function CardListItem({ apartment }: { apartment: UnitType }) {
 					</div>
 					<h3 className="text-lg font-semibold">{apartment.name}</h3>
 					<div className="mt-2 space-y-1">
-						<p className="text-sm text-muted-foreground">
-							Type: {apartment.type}
-						</p>
 						<p className="text-sm font-medium">
-							{apartment.rentPrice} / {apartment.rentDuration}
+							Type:{" "}
+							<TypeBadge
+								type={
+									apartment.type as
+										| "ENTIRE_PROPERTY"
+										| "ROOM"
+										| "APARTMENT"
+								}
+							/>
 						</p>
+						<div className="flex gap-10 flex-wrap">
+							<p className="text-sm font-medium">
+								Rent:{" "}
+								<span className="text-muted-foreground">
+									{toCurrency(apartment.rentPrice)}
+								</span>
+							</p>
+							<p className="text-sm font-medium">
+								Cycle:
+								<span className="text-muted-foreground">
+									{` Every ${
+										apartment.rentDuration
+									} ${getCycleLabel({
+										duration: apartment.rentDuration,
+										cycle: apartment.rentCycle,
+									})}`}
+								</span>
+							</p>
+						</div>
 						<div className="mt-2">
 							<Badge
 								variant={
@@ -69,11 +95,32 @@ export default function CardListItem({ apartment }: { apartment: UnitType }) {
 				</div>
 			</div>
 
-			<ImageLightbox
-				images={apartment.images}
-				isOpen={lightboxOpen}
-				onClose={() => setLightboxOpen(false)}
-			/>
+			{apartment.images[0] && (
+				<ImageLightbox
+					images={apartment.images}
+					isOpen={lightboxOpen}
+					onClose={() => setLightboxOpen(false)}
+				/>
+			)}
 		</div>
 	);
 }
+
+const TypeBadge = ({
+	type,
+}: {
+	type: "ENTIRE_PROPERTY" | "ROOM" | "APARTMENT";
+}) => {
+	if (type == "ENTIRE_PROPERTY")
+		return (
+			<span className="text-sm text-muted-foreground">
+				Entire Property
+			</span>
+		);
+	else
+		return (
+			<span className="text-sm text-muted-foreground capitalize">
+				{type.toLowerCase()}
+			</span>
+		);
+};
