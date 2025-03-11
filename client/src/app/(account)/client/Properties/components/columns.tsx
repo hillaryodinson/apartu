@@ -9,6 +9,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CirclePlus, EllipsisVertical, Eye, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropertyType } from "@/utils/types";
+import { Link } from "react-router-dom";
 
 interface ColumnProps {
 	onView?: (id: PropertyType) => void;
@@ -30,10 +31,18 @@ export const getColumns = ({
 		cell: (info) => info.row.index + 1,
 	},
 	{
-		accessorKey: "title",
+		accessorKey: "name",
 		cell: ({ row }) => {
 			const currentMember = row.original as PropertyType;
-			return <div className="font-medium">{currentMember.name}</div>;
+			return (
+				<div className="font-medium">
+					<Link
+						to="#"
+						onClick={() => onView && onView(currentMember)}>
+						{currentMember.name}
+					</Link>
+				</div>
+			);
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Property" />
