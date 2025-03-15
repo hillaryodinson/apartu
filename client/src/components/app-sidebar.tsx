@@ -50,7 +50,7 @@ const data = {
 			items: [
 				{
 					title: "Properties",
-					url: "/dashboard/properties",
+					url: "/my-listings/properties",
 				},
 				{
 					title: "Units",

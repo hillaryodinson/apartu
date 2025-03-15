@@ -7,11 +7,12 @@ import { Helmet } from "react-helmet";
 import { redirect, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { usePropertyStore } from "@/store/property-store";
 import { Skeleton } from "@/components/ui/skeleton";
 import CardListItem from "@/components/site/card-list-item";
 import api from "@/utils/api";
 import PropertyOverview from "@/components/site/property-overview";
+import { usePropertyStore } from "@/store/property-store";
+import { AddUnitModal } from "../Unit/components/AddUnitModal";
 
 const MyPropertyDetailsPage = () => {
 	const { propertyId } = useParams();
@@ -20,6 +21,7 @@ const MyPropertyDetailsPage = () => {
 		propertyStore.selectedProperty
 	);
 	const navigate = useNavigate();
+	const [openModal, setOpenModal] = useState<boolean>(false);
 
 	useEffect(() => {
 		const fetchProperty = async () => {
@@ -62,7 +64,8 @@ const MyPropertyDetailsPage = () => {
 								</Button>
 								<Button
 									className="!rounded-lg bg-slate-900"
-									size={"sm"}>
+									size={"sm"}
+									onClick={() => setOpenModal(true)}>
 									<PlusCircle /> Add Unit
 								</Button>
 							</div>
@@ -91,6 +94,11 @@ const MyPropertyDetailsPage = () => {
 					</Card>
 				</div>
 			</div>
+			<AddUnitModal
+				property={property!}
+				setOpen={setOpenModal}
+				open={openModal}
+			/>
 		</>
 	);
 };

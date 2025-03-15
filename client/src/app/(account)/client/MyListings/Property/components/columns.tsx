@@ -54,8 +54,7 @@ export const getColumns = ({
 			const currentMember = row.original as PropertyType;
 			return (
 				<div className="text-xs text-muted-foreground">
-					{currentMember.address}, {currentMember.state},{" "}
-					{currentMember.country}
+					{currentMember.address}
 				</div>
 			);
 		},
@@ -66,7 +65,16 @@ export const getColumns = ({
 	{
 		accessorKey: "type",
 		cell: ({ row }) => {
-			return <div className="font-medium">{row.original.type}</div>;
+			const currentMember = row.original.type;
+
+			if (currentMember.toLowerCase() == "apartment_complex")
+				return <div className="font-medium">Apartment Complex</div>;
+			else
+				return (
+					<div className="font-medium capitalize">
+						{row.original.type.toLowerCase()}
+					</div>
+				);
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Type" />
@@ -78,7 +86,7 @@ export const getColumns = ({
 			//const col = row.original.units.length;
 			return (
 				<div className="font-medium text-center">
-					{row.original.units.length}
+					{row.original.units.length} unit(s)
 				</div>
 			);
 		},

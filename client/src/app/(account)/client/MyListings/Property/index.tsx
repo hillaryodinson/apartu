@@ -7,18 +7,14 @@ import { PropertyType } from "@/utils/types";
 import DataTable from "@/components/datatable/datatable";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { Modal } from "@/components/site/modal/modal";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyProperties } from "./action";
-import AddPropertyForm from "./components/AddPropertyForm";
-import AddUnitForm from "./components/AddUnitForm";
-import { usePropertyStore } from "@/store/property-store";
 import { useNavigate } from "react-router-dom";
+import { usePropertyStore } from "@/store/property-store";
+import { PropertyModal } from "./components/PropertyModal";
 
 const MyPropertiesPage = () => {
-	const [openModal, setOpenModal] = useState<boolean>(false);
-	const [openModal1, setOpenModal1] = useState<boolean>(false);
-	const [propertyId, setPropertyId] = useState<string | undefined>(undefined);
+	const [openModal, setOpenModal] = useState(false);
 	const setSelectedProperty = usePropertyStore(
 		(state) => state.setSelectedProperty
 	);
@@ -30,7 +26,7 @@ const MyPropertiesPage = () => {
 				onView: (data: PropertyType) => {
 					console.log(data);
 					setSelectedProperty(data);
-					navigate(`/dashboard/properties/${data.id}`);
+					navigate(`/my-listings/properties/${data.id}`);
 				},
 				onDelete: (data: PropertyType) => {
 					console.log(data);
@@ -79,25 +75,7 @@ const MyPropertiesPage = () => {
 					</Card>
 				</div>
 			</div>
-			<Modal title="Add Property" open={openModal} setOpen={setOpenModal}>
-				<AddPropertyForm
-					onSuccessFn={(id) => {
-						setOpenModal(false);
-						setOpenModal1(true);
-						setPropertyId(id);
-					}}
-				/>
-			</Modal>
-
-			<Modal
-				title="Property Listing Details"
-				open={openModal1}
-				setOpen={setOpenModal1}>
-				<AddUnitForm
-					propertyId={propertyId ?? ""}
-					onSuccessFn={() => setOpenModal1(false)}
-				/>
-			</Modal>
+			<PropertyModal open={openModal} setOpen={setOpenModal} />
 		</>
 	);
 };

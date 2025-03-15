@@ -28,8 +28,10 @@ import { z } from "zod";
 
 const AddPropertyForm = ({
 	onSuccessFn,
+	setHasUnit,
 }: {
-	onSuccessFn: (data: string) => void;
+	onSuccessFn: (data: PropertyType) => void;
+	setHasUnit: (value: boolean) => void;
 }) => {
 	const [countryName, setCountryName] = useState("");
 	const [stateName, setStateName] = useState("");
@@ -60,7 +62,7 @@ const AddPropertyForm = ({
 		onSuccess: (data) => {
 			toast.success("Property created successfully");
 			form.reset();
-			if (data) onSuccessFn(data.id);
+			if (data) onSuccessFn(data);
 			queryClient.invalidateQueries({
 				queryKey: ["fetch_my_properties"],
 			});
@@ -80,53 +82,51 @@ const AddPropertyForm = ({
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="space-y-4 py-10"
+				className="space-y-6"
 				method="POST">
-				<div>
-					<FormField
-						control={form.control}
-						name="type"
-						render={({ field }) => (
-							<FormItem className="space-y-2">
-								<FormLabel>
-									What type of property are you offering?
-								</FormLabel>
-								<FormControl>
-									<RadioGroup
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-										className="flex space-y-0">
-										<FormItem className="flex items-center space-x-3 space-y-0">
-											<FormControl>
-												<RadioGroupItem value="APARTMENT_COMPLEX" />
-											</FormControl>
-											<FormLabel className="font-normal">
-												Apartment Complex
-											</FormLabel>
-										</FormItem>
-										<FormItem className="flex items-center space-x-3 space-y-0">
-											<FormControl>
-												<RadioGroupItem value="HOUSE" />
-											</FormControl>
-											<FormLabel className="font-normal">
-												House
-											</FormLabel>
-										</FormItem>
-										<FormItem className="flex items-center space-x-3 space-y-0">
-											<FormControl>
-												<RadioGroupItem value="ESTATE" />
-											</FormControl>
-											<FormLabel className="font-normal">
-												Estate
-											</FormLabel>
-										</FormItem>
-									</RadioGroup>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
+				<FormField
+					control={form.control}
+					name="type"
+					render={({ field }) => (
+						<FormItem className="space-y-2">
+							<FormLabel>
+								What type of property are you offering?
+							</FormLabel>
+							<FormControl>
+								<RadioGroup
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+									className="flex space-y-0">
+									<FormItem className="flex items-center space-x-3 space-y-0">
+										<FormControl>
+											<RadioGroupItem value="APARTMENT_COMPLEX" />
+										</FormControl>
+										<FormLabel className="font-normal">
+											Apartment Complex
+										</FormLabel>
+									</FormItem>
+									<FormItem className="flex items-center space-x-3 space-y-0">
+										<FormControl>
+											<RadioGroupItem value="HOUSE" />
+										</FormControl>
+										<FormLabel className="font-normal">
+											House
+										</FormLabel>
+									</FormItem>
+									<FormItem className="flex items-center space-x-3 space-y-0">
+										<FormControl>
+											<RadioGroupItem value="ESTATE" />
+										</FormControl>
+										<FormLabel className="font-normal">
+											Estate
+										</FormLabel>
+									</FormItem>
+								</RadioGroup>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
 				<FormField
 					control={form.control}
@@ -146,6 +146,39 @@ const AddPropertyForm = ({
 						</FormItem>
 					)}
 				/>
+
+				<div>
+					<FormItem className="space-y-2">
+						<FormLabel>
+							Are you renting part of the property?
+						</FormLabel>
+						<FormControl>
+							<RadioGroup
+								onValueChange={(value) => {
+									setHasUnit(value === "yes");
+								}}
+								className="flex space-y-0">
+								<FormItem className="flex items-center space-x-3 space-y-0">
+									<FormControl>
+										<RadioGroupItem value="yes" />
+									</FormControl>
+									<FormLabel className="font-normal">
+										Yes
+									</FormLabel>
+								</FormItem>
+								<FormItem className="flex items-center space-x-3 space-y-0">
+									<FormControl>
+										<RadioGroupItem value="No" />
+									</FormControl>
+									<FormLabel className="font-normal">
+										No
+									</FormLabel>
+								</FormItem>
+							</RadioGroup>
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				</div>
 
 				<FormField
 					control={form.control}
@@ -202,8 +235,8 @@ const AddPropertyForm = ({
 											"address",
 											[
 												e.target.value,
-												countryName || "",
 												stateName || "",
+												countryName || "",
 											].join(", ")
 										)
 									}
@@ -217,12 +250,15 @@ const AddPropertyForm = ({
 						</FormItem>
 					)}
 				/>
-				<Button type="submit" disabled={isLoading}>
-					{isLoading && (
-						<Loader2 className="mr-2 h-4 w-4 stroke-green-500 animate-spin" />
-					)}{" "}
-					{isLoading ? "Saving..." : "Create Property"}
-				</Button>
+
+				<div className="flex justify-end">
+					<Button type="submit" disabled={isLoading}>
+						{isLoading && (
+							<Loader2 className="mr-2 h-4 w-4 stroke-green-500 animate-spin" />
+						)}{" "}
+						{isLoading ? "Saving..." : "Next"}
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);

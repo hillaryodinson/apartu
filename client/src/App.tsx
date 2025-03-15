@@ -14,8 +14,8 @@ import PropertyListingPage from "./app/PropertyListingPage";
 import { ToastContainer } from "react-toastify";
 import BackendLayout from "./components/layout/backend";
 import AccountActivationPage from "./app/(auth)/AccountActivation";
-import MyPropertiesPage from "./app/(account)/client/Properties";
-import MyPropertyDetailsPage from "./app/(account)/client/PropertyDetail";
+import MyPropertiesPage from "./app/(account)/client/MyListings/Property";
+import MyPropertyDetailsPage from "./app/(account)/client/MyListings/PropertyDetail";
 
 function App() {
 	const routes = createBrowserRouter([
@@ -62,11 +62,11 @@ function App() {
 					element: <DashboardPage />,
 				},
 				{
-					path: "/dashboard/properties",
+					path: "/my-listings/properties",
 					element: <MyPropertiesPage />,
 				},
 				{
-					path: "/dashboard/properties/:propertyId",
+					path: "/my-listings/properties/:propertyId",
 					element: <MyPropertyDetailsPage />,
 				},
 			],

@@ -1,6 +1,6 @@
 import { UnitType } from "@/utils/types";
 import { useMemo } from "react";
-import { getColumns } from "./columns";
+import { getColumns } from "./components/columns";
 import DataTable from "@/components/datatable/datatable";
 
 const Units = () => {

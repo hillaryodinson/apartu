@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { ImageSchema, UnitBasicInfoSchema } from "./zod";
+
 export type ApiResponse<T> = {
 	success: boolean;
 	message: string;
@@ -49,3 +52,8 @@ export type PropertyType = {
 	units: UnitType[];
 	updatedAt: string;
 };
+
+export type UnitBasicInfo = z.infer<typeof UnitBasicInfoSchema> & {
+	propertyId: string;
+};
+export type UnitImageInfo = z.infer<typeof ImageSchema>[];
