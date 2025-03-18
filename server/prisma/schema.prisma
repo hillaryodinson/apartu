@@ -85,7 +85,7 @@ enum RentPaymentCycle {
 
 model Unit {
   id           String           @id @default(uuid())
-  property     Property         @relation(fields: [propertyId], references: [id])
+  property     Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId   String
   name         String
   type         UnitType
@@ -93,7 +93,7 @@ model Unit {
   rentDuration Int //inDays
   rentCycle    RentPaymentCycle @default(YEARLY)
   availability Availability     @default(AVAILABLE)
-  parentUnit   Unit?            @relation("ParentChild", fields: [parentUnitId], references: [id])
+  parentUnit   Unit?            @relation("ParentChild", fields: [parentUnitId], references: [id], onDelete: Cascade)
   parentUnitId String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
@@ -109,7 +109,7 @@ model Image {
   image     String
   thumb     String
   createdAt DateTime @default(now())
-  unit       Unit      @relation(fields: [unitId], references: [id])
+  unit       Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
 }
 
 model Lease {

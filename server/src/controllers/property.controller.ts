@@ -4,6 +4,8 @@ import { propertySchema, unitSchema, unitUpdateSchema } from "../configs/zod";
 import db from "../configs/db";
 import { PropertyType, UnitUpdateType } from "../configs/types";
 import { AppError, ERROR_CODES } from "../utils/errors";
+import fs from "fs";
+import path from "path";
 
 export const addProperty = async (req: Request, res: Response) => {
 	//validate the user input
@@ -336,6 +338,54 @@ export const deleteUnit = async (req: Request, res: Response) => {
 		throw new AppError(
 			ERROR_CODES.VALIDATION_UNAUTHENTICATED,
 			"Unauthorized"
+		);
+
+	const unit = await db.unit.findFirst({
+		where: {
+			id: params.unitId,
+		},
+		include: {
+			images: true,
+		},
+	});
+
+	const BaseUrl = process.env.BASE_URL || "http://localhost:3000";
+
+	// delete physical images from the directory
+	if (unit && unit.images.length > 0) {
+		const imageDirectory = path.join(__dirname);
+
+		unit.images.forEach((image) => {
+			const imageMainPath = path.join(
+				imageDirectory,
+				image.image.replace(BaseUrl, "")
+			);
+			const imageThumbPath = path.join(
+				imageDirectory,
+				image.thumb.replace(BaseUrl, "")
+			);
+			const imagePath = path.join(
+				imageDirectory,
+				image.image.replace(BaseUrl, "")
+			);
+			if (fs.existsSync(imagePath)) {
+				fs.unlinkSync(imagePath);
+			}
+
+			if (fs.existsSync(imageMainPath)) {
+				fs.unlinkSync(imageMainPath);
+			}
+
+			if (fs.existsSync(imageThumbPath)) {
+				fs.unlinkSync(imageThumbPath);
+			}
+		});
+	}
+
+	if (!unit)
+		throw new AppError(
+			ERROR_CODES.DB_RECORD_NOT_FOUND,
+			"Could not find unit"
 		);
 
 	if (owner.role == "admin") {
