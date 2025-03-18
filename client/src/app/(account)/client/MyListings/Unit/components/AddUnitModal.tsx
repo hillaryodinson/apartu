@@ -78,7 +78,7 @@ export function AddUnitModal({
 						<DialogTitle>Add New Unit</DialogTitle>
 					</DialogHeader>
 
-					<div className="mb-6">
+					<div className="">
 						<div className="flex justify-between mb-4">
 							{Array.from({ length: totalSteps }).map(
 								(_, index) => (
@@ -125,7 +125,7 @@ export function AddUnitModal({
 						</div>
 					</div>
 
-					<div className="py-4">
+					<div className="">
 						{currentStep === 1 && (
 							<AddUnitForm
 								onNext={handleNext}

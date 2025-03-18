@@ -1,13 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UnitType } from "@/utils/types";
-import { Pencil, Trash2 } from "lucide-react";
+import { Image, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ImageLightbox from "../lightbox";
 import { getCycleLabel, toCurrency } from "@/utils/helper";
 
+type CardListItemProps = {
+	apartment: UnitType;
+	onEdit: (unit: UnitType) => void;
+	onDelete: (unit: string) => void;
+	onChangeImage: (unit: UnitType) => void;
+};
 // Apartment card component
-export default function CardListItem({ apartment }: { apartment: UnitType }) {
+export default function CardListItem({
+	apartment,
+	onEdit,
+	onDelete,
+	onChangeImage,
+}: CardListItemProps) {
 	const [lightboxOpen, setLightboxOpen] = useState(false);
 	console.log(apartment);
 
@@ -32,14 +43,27 @@ export default function CardListItem({ apartment }: { apartment: UnitType }) {
 				</div>
 				<div className="relative flex-1 p-4">
 					<div className="absolute right-4 top-4 flex space-x-2">
-						<Button variant="ghost" size="icon" className="h-8 w-8">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8"
+							onClick={() => onEdit(apartment)}>
 							<Pencil className="h-4 w-4" />
 							<span className="sr-only">Edit</span>
 						</Button>
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-8 w-8 text-destructive">
+							className="h-8 w-8"
+							onClick={() => onChangeImage(apartment)}>
+							<Image className="h-4 w-4" />
+							<span className="sr-only">Change Photo</span>
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 text-destructive"
+							onClick={() => onDelete(apartment.id)}>
 							<Trash2 className="h-4 w-4" />
 							<span className="sr-only">Delete</span>
 						</Button>

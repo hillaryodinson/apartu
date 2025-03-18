@@ -1,7 +1,7 @@
 import DashboardPageHeader from "@/components/site/dashboard-page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { ApiResponse, PropertyType } from "@/utils/types";
+import { ApiResponse, PropertyType, UnitType } from "@/utils/types";
 import { ChevronLeft, PlusCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { redirect, useNavigate } from "react-router-dom";
@@ -13,15 +13,22 @@ import api from "@/utils/api";
 import PropertyOverview from "@/components/site/property-overview";
 import { usePropertyStore } from "@/store/property-store";
 import { AddUnitModal } from "../Unit/components/AddUnitModal";
+import { Modal } from "@/components/site/modal/modal";
+import EditUnitForm from "../Unit/components/EditUnitBasicInfoForm";
+import EditUnitImageForm from "../Unit/components/EditUnitImageForm";
+import { toast } from "react-toastify";
 
 const MyPropertyDetailsPage = () => {
 	const { propertyId } = useParams();
 	const propertyStore = usePropertyStore((state) => state);
+	const [editModal, setEditModal] = useState<boolean>(false);
+	const [editImageModal, setEditImageModal] = useState<boolean>(false);
 	const [property, setProperty] = useState<PropertyType | null>(
 		propertyStore.selectedProperty
 	);
 	const navigate = useNavigate();
 	const [openModal, setOpenModal] = useState<boolean>(false);
+	const [unit, setUnit] = useState<UnitType | null>(null);
 
 	useEffect(() => {
 		const fetchProperty = async () => {
@@ -43,6 +50,27 @@ const MyPropertyDetailsPage = () => {
 
 		fetchProperty();
 	}, [property, propertyId, propertyStore]);
+
+	const onEdit = (unit: UnitType) => {
+		setEditModal(true);
+		setUnit(unit);
+		console.log(unit);
+	};
+
+	const onDelete = async (unitId: string) => {
+		const response = await api.delete(`/property/unit/${unitId}`);
+		if (response.status === 200) {
+			toast.success("Unit was deleted successfully");
+		} else {
+			toast.error("An error occured could not delete unit");
+		}
+	};
+
+	const onChangeImage = (unit: UnitType) => {
+		setEditImageModal(true);
+		setUnit(unit);
+		console.log(unit);
+	};
 
 	return (
 		<>
@@ -79,11 +107,14 @@ const MyPropertyDetailsPage = () => {
 								<h2 className="text-2xl font-bold"> Units </h2>
 							)}
 							{property ? (
-								<div className="grid gap-4">
+								<div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
 									{property.units.map((apartment) => (
 										<CardListItem
 											key={apartment.id}
 											apartment={apartment}
+											onEdit={onEdit}
+											onDelete={onDelete}
+											onChangeImage={onChangeImage}
 										/>
 									))}
 								</div>
@@ -99,6 +130,28 @@ const MyPropertyDetailsPage = () => {
 				setOpen={setOpenModal}
 				open={openModal}
 			/>
+			<Modal title="Edit Unit" open={editModal} setOpen={setEditModal}>
+				{unit && (
+					<EditUnitForm
+						values={{ unit: unit, propertyId: property?.id ?? "" }}
+						onSave={() => {}}
+					/>
+				)}
+			</Modal>
+			<Modal
+				title={`Edit ${unit?.name ?? ""} Images`}
+				open={editImageModal}
+				setOpen={setEditImageModal}>
+				{unit && (
+					<EditUnitImageForm
+						values={{
+							images: unit.images,
+							unitId: unit.id,
+						}}
+						onEdit={() => setEditImageModal(false)}
+					/>
+				)}
+			</Modal>
 		</>
 	);
 };
