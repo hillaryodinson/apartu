@@ -20,7 +20,6 @@ export default function CardListItem({
 	onChangeImage,
 }: CardListItemProps) {
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	console.log(apartment);
 
 	return (
 		<div className="relative overflow-hidden rounded-lg border bg-background shadow-none">

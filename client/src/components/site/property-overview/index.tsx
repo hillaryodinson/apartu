@@ -7,7 +7,6 @@ export default function PropertyOverview({
 }: {
 	property: PropertyType;
 }) {
-	console.log(property);
 	const units = property?.units || [];
 	const totalOccupiedUnits = units.filter(
 		(unit) => unit.availability.toLowerCase() === "rented"

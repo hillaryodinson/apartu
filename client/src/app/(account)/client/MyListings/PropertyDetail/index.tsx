@@ -4,52 +4,61 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ApiResponse, PropertyType, UnitType } from "@/utils/types";
 import { ChevronLeft, PlusCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import CardListItem from "@/components/site/card-list-item";
 import api from "@/utils/api";
 import PropertyOverview from "@/components/site/property-overview";
-import { usePropertyStore } from "@/store/property-store";
+// import { usePropertyStore } from "@/store/property-store";
 import { AddUnitModal } from "../Unit/components/AddUnitModal";
 import { Modal } from "@/components/site/modal/modal";
 import EditUnitForm from "../Unit/components/EditUnitBasicInfoForm";
 import EditUnitImageForm from "../Unit/components/EditUnitImageForm";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 const MyPropertyDetailsPage = () => {
 	const { propertyId } = useParams();
-	const propertyStore = usePropertyStore((state) => state);
+	// const propertyStore = usePropertyStore((state) => state);
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editImageModal, setEditImageModal] = useState<boolean>(false);
-	const [property, setProperty] = useState<PropertyType | null>(
-		propertyStore.selectedProperty
-	);
+	// const [property, setProperty] = useState<PropertyType | null>(
+	// propertyStore.selectedProperty
+	// );
 	const navigate = useNavigate();
 	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [unit, setUnit] = useState<UnitType | null>(null);
+	const { data: property } = useQuery({
+		queryKey: ["property_overview", propertyId],
+		queryFn: async () => {
+			const response = await api.get(`/property/${propertyId}`);
+			const result = (await response.data) as ApiResponse<PropertyType>;
+			return result.data;
+		},
+	});
 
-	useEffect(() => {
-		const fetchProperty = async () => {
-			if (property == null && propertyStore.selectedProperty == null) {
-				try {
-					const response = await api.get(`/property/${propertyId}`);
-					const result =
-						(await response.data) as ApiResponse<PropertyType>;
-					propertyStore.setSelectedProperty(result.data!);
-					setProperty(result.data!);
-				} catch (error) {
-					console.error(error);
-					redirect("/dashboard/properties");
-				}
-			} else {
-				setProperty(propertyStore.selectedProperty);
-			}
-		};
+	// useEffect(() => {
+	// 	const fetchProperty = async () => {
+	// 		if (property == null && propertyStore.selectedProperty == null) {
+	// 			try {
+	// 				const response = await api.get(`/property/${propertyId}`);
+	// 				const result =
+	// 					(await response.data) as ApiResponse<PropertyType>;
+	// 				propertyStore.setSelectedProperty(result.data!);
+	// 				setProperty(result.data!);
+	// 			} catch (error) {
+	// 				console.error(error);
+	// 				redirect("/dashboard/properties");
+	// 			}
+	// 		} else {
+	// 			setProperty(propertyStore.selectedProperty);
+	// 		}
+	// 	};
 
-		fetchProperty();
-	}, [property, propertyId, propertyStore]);
+	// 	fetchProperty();
+	// }, [property, propertyId, propertyStore]);
 
 	const onEdit = (unit: UnitType) => {
 		setEditModal(true);
@@ -100,7 +109,7 @@ const MyPropertyDetailsPage = () => {
 						</CardHeader>
 						<CardContent>
 							{property && (
-								<PropertyOverview property={property!} />
+								<PropertyOverview property={property} />
 							)}
 
 							{property?.units && (
@@ -134,7 +143,7 @@ const MyPropertyDetailsPage = () => {
 				{unit && (
 					<EditUnitForm
 						values={{ unit: unit, propertyId: property?.id ?? "" }}
-						onSave={() => {}}
+						onSave={() => setEditModal(false)}
 					/>
 				)}
 			</Modal>

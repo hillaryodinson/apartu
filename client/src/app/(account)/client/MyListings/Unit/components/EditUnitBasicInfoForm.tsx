@@ -25,6 +25,9 @@ import {
 import { z } from "zod";
 import { UnitBasicInfo, UnitType } from "@/utils/types";
 import { UnitBasicInfoSchema } from "@/utils/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/utils/api";
+import { toast } from "react-toastify";
 
 interface EditUnitFormProps {
 	values: {
@@ -42,6 +45,8 @@ type DisplayDataType = {
 
 const EditUnitForm = ({ values, onSave }: EditUnitFormProps) => {
 	const { unit, propertyId } = values;
+	const queryClient = useQueryClient();
+
 	const [displayData, setDisplayData] = useState<DisplayDataType>({
 		amount: unit.rentPrice,
 		duration: unit.rentDuration,
@@ -57,13 +62,40 @@ const EditUnitForm = ({ values, onSave }: EditUnitFormProps) => {
 		propertyId: propertyId,
 	};
 
+	const updateUnitMutation = useMutation({
+		mutationKey: ["unit", "update", unit.id],
+		mutationFn: async (data: z.infer<typeof UnitBasicInfoSchema>) => {
+			// A mutation is about to happen!
+			const response = await api.put(`/property/unit/${unit.id}`, data);
+			// Make a request to your API here
+			if (response.status !== 200)
+				throw new Error("Failed to update unit");
+
+			return response.data;
+		},
+		onSuccess() {
+			toast.success("Unit updated successfully");
+			queryClient.invalidateQueries({
+				queryKey: ["property_overview", propertyId],
+			});
+
+			onSave();
+		},
+		onError(error) {
+			console.error(error);
+			toast.error("Failed to update unit");
+		},
+	});
+
 	const form = useForm<z.infer<typeof UnitBasicInfoSchema>>({
 		resolver: zodResolver(UnitBasicInfoSchema),
 		defaultValues: initialValues,
 	});
 
 	const onSubmit = (data: z.infer<typeof UnitBasicInfoSchema>) => {
-		console.log(data);
+		//make an api request and update the records
+		updateUnitMutation.mutate(data);
+
 		onSave();
 	};
 
@@ -73,47 +105,49 @@ const EditUnitForm = ({ values, onSave }: EditUnitFormProps) => {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="space-y-6"
 				method="POST">
-				<FormField
-					control={form.control}
-					name="type"
-					render={({ field }) => (
-						<FormItem className="space-y-1">
-							<FormLabel>Apartment or Room?</FormLabel>
-							<FormDescription>
-								Select whether you're offering a part of your
-								property or the entire property for rent.
-							</FormDescription>
-							<FormControl>
-								<RadioGroup
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-									className="flex flex-col space-y-0">
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem value="APARTMENT" />
-										</FormControl>
-										<FormLabel className="font-normal">
-											Apartment: A separate living unit
-											(e.g., a studio or one-bedroom
-											apartment).
-										</FormLabel>
-									</FormItem>
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem value="ROOM" />
-										</FormControl>
-										<FormLabel className="font-normal">
-											Room: A single room within a
-											property (e.g., a bedroom).
-										</FormLabel>
-									</FormItem>
-								</RadioGroup>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
+				{form.getValues("type") !== "ENTIRE_PROPERTY" && (
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem className="space-y-1">
+								<FormLabel>Apartment or Room?</FormLabel>
+								<FormDescription>
+									Select whether you're offering a part of
+									your property or the entire property for
+									rent.
+								</FormDescription>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex flex-col space-y-0">
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="APARTMENT" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Apartment: A separate living
+												unit (e.g., a studio or
+												one-bedroom apartment).
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="ROOM" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Room: A single room within a
+												property (e.g., a bedroom).
+											</FormLabel>
+										</FormItem>
+									</RadioGroup>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				)}
 				<FormField
 					control={form.control}
 					name="name"
