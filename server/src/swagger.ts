@@ -20,6 +20,10 @@ const options = {
 				description: "Authentication related endpoints",
 			},
 			{
+				name: "Category",
+				description: "Category related endpoints",
+			},
+			{
 				name: "File",
 				description: "File and upload related endpoints",
 			},
@@ -41,6 +45,19 @@ const options = {
 				},
 			},
 			schemas: {
+				Category: {
+					type: "object",
+					properties: {
+						id: {
+							type: "string",
+							example: "fcc8aca3-f9d7-412b-aac4-cde36a76cf7d",
+						},
+						name: {
+							type: "string",
+							example: "Apartment Complex",
+						},
+					},
+				},
 				File: {
 					type: "object",
 					properties: {

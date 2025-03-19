@@ -52,10 +52,6 @@ const data = {
 					title: "Properties",
 					url: "/my-listings/properties",
 				},
-				{
-					title: "Units",
-					url: "#",
-				},
 			],
 		},
 		{
@@ -63,6 +59,10 @@ const data = {
 			url: "#",
 			icon: BookOpen,
 			items: [
+				{
+					title: "Incoming Applications",
+					url: "#",
+				},
 				{
 					title: "Active Tenants",
 					url: "#",

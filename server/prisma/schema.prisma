@@ -68,6 +68,8 @@ model Property {
   type      PropType
   owner     User         @relation(fields: [ownerId], references: [id])
   ownerId   String
+  categoryId String 
+  category  Category @relation(fields: [categoryId], references: [id])
   country   String
   state     String
   createdAt DateTime     @default(now())
@@ -101,6 +103,15 @@ model Unit {
   subUnits Unit[]  @relation("ParentChild")
   leases   Lease[]
   images Image[]
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Property Property[]
 }
 
 model Image {

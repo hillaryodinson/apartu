@@ -5,6 +5,7 @@ import { useUserStore } from "../../store/user-store";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	//   const { user } = useAuth(); // Destructure directly from useAuth()
 	const { user, logOut, token } = useUserStore((state) => state);
+	console.log("PROTECTED ROUTE TOKEN", token);
 
 	// If there is no user (not authenticated), redirect to login
 	if (!user || !token) {
@@ -16,6 +17,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 		const expiryTime = JSON.parse(atob(token.split(".")[1])).exp;
 		const currentTime = Date.now() / 1000;
 		if (expiryTime < currentTime) {
+			console.log("Force Logout");
+			return null;
 			logOut();
 			return <Navigate to="/login" />;
 		}
