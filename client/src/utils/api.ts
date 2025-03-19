@@ -50,7 +50,13 @@ api.interceptors.response.use(
 			const callbackUrl = encodeURIComponent(currentUrl);
 
 			// Redirect the user to the login page with the callback URL as a redirect route parameter
-			window.location.href = `/login?redirect=${callbackUrl}`;
+			//window.location.href = `/login?redirect=${callbackUrl}`;
+			console.log(
+				"AXIO API INTERCEPTOR",
+				callbackUrl,
+				currentUrl,
+				error.response
+			);
 		}
 
 		// Return the error

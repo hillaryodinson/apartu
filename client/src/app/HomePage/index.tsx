@@ -3,8 +3,46 @@ import AboutSection from "../../components/site/about";
 import HeroSection from "../../components/site/hero";
 import ListingCategorySection from "../../components/site/listing-category";
 import ListingPropertySection from "../../components/site/listing-property";
+import { useQuery } from "@tanstack/react-query";
+
+const Properties = [
+	{
+		imageSrc: "/images/property/5.jpg",
+		location: "No. 25, Olumide Street, Ikeja Lagos State, Nigeria",
+		price: 120311,
+		ratings: 4.5,
+		totalReviews: 5,
+	},
+	{
+		imageSrc: "/images/property/6.jpg",
+		location:
+			"Plot 72, Adamu Gwandu Crescent Abuja, Federal Capital Territory, Nigeria",
+		price: 4501000,
+		ratings: 4.0,
+		totalReviews: 25,
+	},
+	{
+		imageSrc: "/images/property/7.jpg",
+		location: "7B Olorunshogo Road, Alagbole Ikeja, Lagos, Nigeria",
+		price: 4501000,
+		ratings: 3.5,
+		totalReviews: 25,
+	},
+	{
+		imageSrc: "/images/property/8.jpg",
+		location: "10, Obafemi Awolowo Road Ibadan, Oyo State, Nigeria",
+		price: 4501000,
+		ratings: 0.0,
+		totalReviews: 25,
+	},
+];
 
 const HomePage = () => {
+	const query = useQuery({
+		queryKey: ["fetch_properties"],
+		queryFn: () => {},
+		refetchInterval: 3600,
+	});
 	return (
 		<>
 			<Helmet>
@@ -26,7 +64,7 @@ const HomePage = () => {
 						without any agent or commisions.
 					</p>
 				</div>
-				<ListingPropertySection />
+				<ListingPropertySection properties={Properties} />
 
 				<div className="md:flex justify-center text-center mt-6">
 					<div className="md:w-full">
