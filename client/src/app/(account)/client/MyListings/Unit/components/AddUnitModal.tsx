@@ -61,7 +61,7 @@ export function AddUnitModal({
 			if (response.status === 201) {
 				toast.success("Unit added successfully");
 				queryClient.invalidateQueries({
-					queryKey: ["fetch_property_units", property.id],
+					queryKey: ["property_overview", property.id],
 				});
 			}
 			handleClose();

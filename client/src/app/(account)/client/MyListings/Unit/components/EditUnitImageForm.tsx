@@ -19,7 +19,7 @@ interface EditUnitFormProps {
 }
 
 const EditUnitImageForm = ({ values, onEdit }: EditUnitFormProps) => {
-	const { images, unitId } = values;
+	const { images } = values;
 
 	const [isLoading, setIsLoading] = useState(false);
 	const setUnitImages = usePropertyStore((state) => state.setUnitImages);
@@ -33,13 +33,10 @@ const EditUnitImageForm = ({ values, onEdit }: EditUnitFormProps) => {
 	});
 
 	const onSubmit = (data: z.infer<typeof UnitImageSchema>) => {
-		// startTransition(() => {
-		console.log(unitId);
 		setIsLoading(true);
 		setUnitImages(data.images!);
 		onEdit();
 		setIsLoading(false);
-		// });
 	};
 
 	return (
@@ -62,6 +59,7 @@ const EditUnitImageForm = ({ values, onEdit }: EditUnitFormProps) => {
 									}))
 								);
 							}}
+							defaultFiles={values.images}
 						/>
 					)}
 				/>

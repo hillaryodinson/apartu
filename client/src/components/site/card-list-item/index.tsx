@@ -5,6 +5,7 @@ import { Image, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ImageLightbox from "../lightbox";
 import { getCycleLabel, toCurrency } from "@/utils/helper";
+import ConfirmModal from "../confirm-modal";
 
 type CardListItemProps = {
 	apartment: UnitType;
@@ -20,6 +21,7 @@ export default function CardListItem({
 	onChangeImage,
 }: CardListItemProps) {
 	const [lightboxOpen, setLightboxOpen] = useState(false);
+	const [confirmDelete, setConfirmDelete] = useState(false);
 
 	return (
 		<div className="relative overflow-hidden rounded-lg border bg-background shadow-none">
@@ -62,7 +64,7 @@ export default function CardListItem({
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 text-destructive"
-							onClick={() => onDelete(apartment.id)}>
+							onClick={() => setConfirmDelete(true)}>
 							<Trash2 className="h-4 w-4" />
 							<span className="sr-only">Delete</span>
 						</Button>
@@ -125,6 +127,14 @@ export default function CardListItem({
 					onClose={() => setLightboxOpen(false)}
 				/>
 			)}
+
+			<ConfirmModal
+				title="Confirm Delete"
+				message="Are you sure you want to delete this?"
+				onConfirm={() => onDelete(apartment.id)}
+				onOpen={confirmDelete}
+				setOpen={setConfirmDelete}
+			/>
 		</div>
 	);
 }

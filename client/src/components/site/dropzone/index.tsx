@@ -20,6 +20,7 @@ interface DropzoneInputProps {
 	maxSize?: number;
 	accept?: Record<string, string[]>;
 	disabled?: boolean;
+	defaultFiles?: uploadedFileType[];
 }
 
 const DropzoneInput = ({
@@ -31,11 +32,14 @@ const DropzoneInput = ({
 		"image/*": [],
 	},
 	disabled = false,
+	defaultFiles,
 	...props
 }: DropzoneInputProps) => {
 	const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false);
 	const [isUploading, setIsUploading] = useState<boolean>(false);
-	const [uploadedFiles, setUploadedFiles] = useState<uploadedFileType[]>([]);
+	const [uploadedFiles, setUploadedFiles] = useState<uploadedFileType[]>(
+		defaultFiles ?? []
+	);
 	const [isPending, startTransition] = useTransition();
 	// const [uploadProgress, setUploadProgress] = useState<number>(0);
 

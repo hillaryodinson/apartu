@@ -17,16 +17,15 @@ import { Modal } from "@/components/site/modal/modal";
 import EditUnitForm from "../Unit/components/EditUnitBasicInfoForm";
 import EditUnitImageForm from "../Unit/components/EditUnitImageForm";
 import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const MyPropertyDetailsPage = () => {
 	const { propertyId } = useParams();
 	// const propertyStore = usePropertyStore((state) => state);
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editImageModal, setEditImageModal] = useState<boolean>(false);
-	// const [property, setProperty] = useState<PropertyType | null>(
-	// propertyStore.selectedProperty
-	// );
+	const queryClient = useQueryClient();
+
 	const navigate = useNavigate();
 	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [unit, setUnit] = useState<UnitType | null>(null);
@@ -39,27 +38,6 @@ const MyPropertyDetailsPage = () => {
 		},
 	});
 
-	// useEffect(() => {
-	// 	const fetchProperty = async () => {
-	// 		if (property == null && propertyStore.selectedProperty == null) {
-	// 			try {
-	// 				const response = await api.get(`/property/${propertyId}`);
-	// 				const result =
-	// 					(await response.data) as ApiResponse<PropertyType>;
-	// 				propertyStore.setSelectedProperty(result.data!);
-	// 				setProperty(result.data!);
-	// 			} catch (error) {
-	// 				console.error(error);
-	// 				redirect("/dashboard/properties");
-	// 			}
-	// 		} else {
-	// 			setProperty(propertyStore.selectedProperty);
-	// 		}
-	// 	};
-
-	// 	fetchProperty();
-	// }, [property, propertyId, propertyStore]);
-
 	const onEdit = (unit: UnitType) => {
 		setEditModal(true);
 		setUnit(unit);
@@ -68,8 +46,12 @@ const MyPropertyDetailsPage = () => {
 
 	const onDelete = async (unitId: string) => {
 		const response = await api.delete(`/property/unit/${unitId}`);
+
 		if (response.status === 200) {
 			toast.success("Unit was deleted successfully");
+			queryClient.invalidateQueries({
+				queryKey: ["property_overview", propertyId],
+			});
 		} else {
 			toast.error("An error occured could not delete unit");
 		}
