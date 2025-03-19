@@ -1,5 +1,5 @@
 import express from "express";
-import { tryCatch } from "../middlewares/middleware";
+import { authorize, tryCatch } from "../middlewares/middleware";
 import {
 	addCategory,
 	deleteCategory,
@@ -152,7 +152,7 @@ categoryRouter.get("/:id", tryCatch(getCategory));
  *                   type: object
  *                   description: A message indicating the result of the operation
  */
-categoryRouter.post("/", tryCatch(addCategory));
+categoryRouter.post("/", authorize, tryCatch(addCategory));
 
 /**
  * @swagger
