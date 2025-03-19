@@ -1,4 +1,3 @@
-import { userStore } from "@/store/user-store";
 import axios from "axios";
 
 // Create an instance of axios
@@ -13,16 +12,19 @@ const api = axios.create({
 api.interceptors.request.use(
 	(config) => {
 		// Get the token from localStorage
-		const token = userStore.token;
-		console.log("TOKEN", token);
+		const state = localStorage.getItem("user-store");
+		if (state) {
+			const parsedState = JSON.parse(state);
+			const token = parsedState.state.token;
+			console.log("TOKEN", token);
 
-		// If the token exists, add it to the Authorization header
-		if (token) {
-			if (config.headers) {
-				config.headers.Authorization = `Bearer ${token}`;
+			// If the token exists, add it to the Authorization header
+			if (token) {
+				if (config.headers) {
+					config.headers.Authorization = `Bearer ${token}`;
+				}
 			}
 		}
-
 		return config;
 	},
 	(error) => {
