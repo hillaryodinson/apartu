@@ -65,7 +65,6 @@ model Property {
   id         String   @id @default(uuid())
   name       String
   address    String
-  type       PropType
   owner      User     @relation(fields: [ownerId], references: [id])
   ownerId    String
   categoryId String
@@ -91,7 +90,8 @@ model Unit {
   property     Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId   String
   name         String
-  type         UnitType
+  typeId       String
+  type         SubCategory      @relation(fields: [typeId], references: [id])
   rentPrice    Float
   rentDuration Int //inDays
   rentCycle    RentPaymentCycle @default(YEARLY)
@@ -151,7 +151,19 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  property Property[]
+  property    Property[]
+  subCategory SubCategory[]
+}
+
+model SubCategory {
+  id         String   @id @default(uuid())
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  unit Unit[]
 }
 
 model Image {
@@ -174,17 +186,6 @@ model Lease {
   rentAmount Float
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-}
-
-enum PropType {
-  HOUSE
-  APARTMENT_COMPLEX
-}
-
-enum UnitType {
-  ENTIRE_PROPERTY
-  APARTMENT
-  ROOM
 }
 
 enum Availability {
