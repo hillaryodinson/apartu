@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateCategoryExists } from "../services/category.service";
 
 export const loginSchema = z.object({
 	email: z.string().email(),
@@ -28,6 +29,15 @@ export const propertySchema = z.object({
 	state: z.string(),
 	country: z.string(),
 	type: z.enum(["HOUSE", "APARTMENT_COMPLEX"]),
+	categoryId: z.string().refine(
+		async (categoryId) => {
+			const exists = await validateCategoryExists(categoryId);
+			return exists;
+		},
+		{
+			message: "Category does not exist",
+		}
+	),
 });
 
 export const imageSchema = z.object({

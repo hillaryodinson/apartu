@@ -21,15 +21,15 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role
-  actiToken String?
+  id                 String    @id @default(uuid())
+  name               String
+  email              String    @unique
+  password           String
+  role               Role
+  actiToken          String?
   actiTokenExpiredAt DateTime?
-  createdAt DateTime @default(now())
-  activatedAt DateTime?
+  createdAt          DateTime  @default(now())
+  activatedAt        DateTime?
 
   properties Property[]
   leases     Lease[]
@@ -62,20 +62,21 @@ model Mail {
 }
 
 model Property {
-  id        String       @id @default(uuid())
-  name      String
-  address   String
-  type      PropType
-  owner     User         @relation(fields: [ownerId], references: [id])
-  ownerId   String
-  categoryId String 
-  category  Category @relation(fields: [categoryId], references: [id])
-  country   String
-  state     String
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  address    String
+  type       PropType
+  owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId    String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  country    String
+  state      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  units     Unit[]
+  units      Unit[]
+  attributes PropertyAttribute[]
 }
 
 enum RentPaymentCycle {
@@ -100,9 +101,48 @@ model Unit {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
-  subUnits Unit[]  @relation("ParentChild")
-  leases   Lease[]
-  images Image[]
+  subUnits   Unit[]          @relation("ParentChild")
+  leases     Lease[]
+  images     Image[]
+  attributes UnitAttribute[]
+}
+
+enum AttributeValueType {
+  boolean
+  number
+  string
+}
+
+enum AttributeType {
+  property
+  unit
+}
+
+model Attribute {
+  id        String             @id @default(uuid())
+  type      AttributeType
+  valueType AttributeValueType
+  name      String             @unique
+
+  unitAttribute     UnitAttribute[]
+  propertyAttribute PropertyAttribute[]
+}
+
+model UnitAttribute {
+  id    String @id @default(uuid())
+  value String
+
+  unit      Unit[]
+  attribute Attribute[]
+}
+
+model PropertyAttribute {
+  id          String    @id @default(uuid())
+  value       String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId  String
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  attributeId String
 }
 
 model Category {
@@ -111,16 +151,16 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Property Property[]
+  property Property[]
 }
 
 model Image {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   unitId    String
   image     String
   thumb     String
   createdAt DateTime @default(now())
-  unit       Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unit      Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
 }
 
 model Lease {

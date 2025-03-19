@@ -78,6 +78,10 @@ const options = {
 							type: "string",
 							example: "House 1",
 						},
+						categoryId: {
+							type: "string",
+							example: "1629278998877",
+						},
 						address: {
 							type: "string",
 							example: "123 Main St",

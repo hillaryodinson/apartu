@@ -62,6 +62,9 @@ const PropertyRoute = Router();
  *                     name:
  *                       type: string
  *                       description: The name of the newly created property
+ *                     categoryId:
+ *                       type: string
+ *                       description: The Category the property belongs to
  *                     address:
  *                       type: string
  *                       description: The address of the newly created property

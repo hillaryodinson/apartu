@@ -26,6 +26,7 @@ export const addProperty = async (req: Request, res: Response) => {
 			ownerId: owner.id,
 			country: zodResponse.data.country,
 			state: zodResponse.data.state,
+			categoryId: zodResponse.data.categoryId,
 		},
 	});
 
