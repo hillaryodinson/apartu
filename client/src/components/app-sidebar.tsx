@@ -93,6 +93,73 @@ const data = {
 			],
 		},
 	],
+	adminNav: [
+		{
+			title: "Quick Links",
+			url: "#",
+			icon: SquareTerminal,
+			isActive: true,
+			items: [
+				{
+					title: "Dashboard",
+					url: "/dashboard",
+				},
+			],
+		},
+		{
+			title: "Settings",
+			url: "#",
+			icon: Bot,
+			items: [
+				{
+					title: "Category",
+					url: "/category/properties",
+				},
+				{
+					title: "Sub Category",
+					url: "/category/sub-categories",
+				},
+				{
+					title: "Property Attributes",
+					url: "/attributes/properties",
+				},
+				{
+					title: "Unit Attributes",
+					url: "/attributes/units",
+				},
+			],
+		},
+		{
+			title: "Properties",
+			url: "#",
+			icon: Bot,
+			items: [
+				{
+					title: "Properties",
+					url: "/listings/properties",
+				},
+			],
+		},
+		{
+			title: "Users",
+			url: "#",
+			icon: BookOpen,
+			items: [
+				{
+					title: "LandLords",
+					url: "#",
+				},
+				{
+					title: "Care Takers",
+					url: "#",
+				},
+				{
+					title: "Tenants",
+					url: "#",
+				},
+			],
+		},
+	],
 	projects: [
 		{
 			name: "Account Settings",
@@ -121,7 +188,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<TeamSwitcher teams={data.site} />
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
+				<NavMain
+					items={
+						user && user.role == "admin"
+							? data.adminNav
+							: data.navMain
+					}
+				/>
 				<NavProjects projects={data.projects} />
 			</SidebarContent>
 			<SidebarFooter>
