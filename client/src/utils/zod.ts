@@ -28,6 +28,7 @@ export const ImageSchema = z.object({
 	image: z.string(),
 	thumb: z.string(),
 });
+
 export const UnitBasicInfoSchema = z.object({
 	name: z.string(),
 	type: z.enum(["ENTIRE_PROPERTY", "APARTMENT", "ROOM"]),
@@ -35,6 +36,13 @@ export const UnitBasicInfoSchema = z.object({
 	rentDuration: z.coerce.number(),
 	rentCycle: z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]),
 });
+
 export const UnitImageSchema = z.object({
 	images: z.array(ImageSchema).optional(),
+});
+
+export const CategorySchema = z.object({ name: z.string() });
+export const SubCategorySchema = z.object({
+	name: z.string(),
+	categoryId: z.string(),
 });

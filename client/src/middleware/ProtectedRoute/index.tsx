@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useUserStore } from "../../store/user-store";
 import { useLocation } from "react-router-dom";
+import { UserRole } from "@/utils/types";
 // import { useAuth } from '../../providers/auth-provider';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -20,18 +21,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 		const expiryTime = JSON.parse(atob(token.split(".")[1])).exp;
 		const currentTime = Date.now() / 1000;
 		if (expiryTime < currentTime) {
-			console.log("Force Logout");
-			return null;
-			logOut();
 			return <Navigate to="/login" />;
 		}
 	}
 
-	const userRole = user?.role as
-		| "admin"
-		| "landlord"
-		| "tenant"
-		| "caretaker";
+	const userRole = user?.role as UserRole;
 	if (userRole === "admin") {
 		if (!location.pathname.startsWith("/ap-admin/")) {
 			return <Navigate to="/ap-admin/" />;

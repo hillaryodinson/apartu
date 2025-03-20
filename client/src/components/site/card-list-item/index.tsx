@@ -130,11 +130,13 @@ export default function CardListItem({
 
 			<ConfirmModal
 				title="Confirm Delete"
-				message="Are you sure you want to delete this?"
 				onConfirm={() => onDelete(apartment.id)}
 				onOpen={confirmDelete}
-				setOpen={setConfirmDelete}
-			/>
+				setOpen={setConfirmDelete}>
+				<p className="text-center">
+					Are you sure you want to delete <b>{apartment.name}</b>?
+				</p>
+			</ConfirmModal>
 		</div>
 	);
 }

@@ -103,13 +103,13 @@ const AddPropertyForm = ({
 					name="categoryId"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Email</FormLabel>
+							<FormLabel>Select Propery Category</FormLabel>
 							<Select
 								onValueChange={field.onChange}
 								defaultValue={field.value}>
 								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder="Select the category your property belongs to" />
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select the category" />
 									</SelectTrigger>
 								</FormControl>
 								<SelectContent>

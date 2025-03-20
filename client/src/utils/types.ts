@@ -58,6 +58,12 @@ export type CategoryType = {
 	name: string;
 };
 
+export type SubCategoryType = {
+	id: string;
+	name: string;
+	category: CategoryType;
+};
+
 export type UnitBasicInfo = z.infer<typeof UnitBasicInfoSchema> & {
 	propertyId: string;
 };

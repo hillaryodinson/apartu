@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { Modal } from "../modal/modal";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 interface ConfirmModalProps {
 	title: string;
-	message: string;
+	children: ReactNode;
 	onOpen: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 	onConfirm: () => void;
@@ -13,7 +13,7 @@ interface ConfirmModalProps {
 
 const ConfirmModal = ({
 	title,
-	message,
+	children,
 	onConfirm,
 	onOpen,
 	setOpen,
@@ -25,9 +25,11 @@ const ConfirmModal = ({
 
 	return (
 		<Modal title={title} open={onOpen} setOpen={setOpen}>
-			<p className="text-center">{message}</p>
+			{children}
 			<div className="flex flex-row justify-between pt-4">
-				<Button variant={"outline"}>Cancel</Button>
+				<Button variant={"outline"} onClick={() => setOpen(false)}>
+					Cancel
+				</Button>
 				<Button
 					onClick={onSubmit}
 					className="bg-red-700 hover:bg-red-500 text-white">

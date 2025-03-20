@@ -14,6 +14,8 @@ import MyPropertyDetailsPage from "../app/(account)/landlord/MyListings/Property
 import { createBrowserRouter } from "react-router-dom";
 import AdminDashboardPage from "@/app/(account)/admin/Dashboard";
 import ApPropertiesPage from "@/app/(account)/admin/Properties";
+import ApCategoriesPage from "@/app/(account)/admin/Settings/Categories";
+import ApSubCategoriesPage from "@/app/(account)/admin/Settings/SubCategories";
 export const routes = createBrowserRouter([
 	{
 		path: "/",
@@ -131,8 +133,12 @@ export const routes = createBrowserRouter([
 				element: <ApPropertiesPage />,
 			},
 			{
-				path: "/ap-admin/listings/properties/:propertyId",
-				element: <MyPropertyDetailsPage />,
+				path: "/ap-admin/category",
+				element: <ApCategoriesPage />,
+			},
+			{
+				path: "/ap-admin/category/:categoryId/sub-categories",
+				element: <ApSubCategoriesPage />,
 			},
 		],
 	},
