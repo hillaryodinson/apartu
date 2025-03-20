@@ -10,7 +10,70 @@ import {
 
 // This is sample data.
 export const RouteData = {
-	navMain: [
+	landlord: [
+		{
+			title: "Quick Links",
+			url: "#",
+			icon: SquareTerminal,
+			isActive: true,
+			items: [
+				{
+					title: "Dashboard",
+					url: "/ll/dashboard",
+				},
+			],
+		},
+		{
+			title: "My Properties",
+			url: "#",
+			icon: Bot,
+			items: [
+				{
+					title: "Properties",
+					url: "/ll/my-listings/properties",
+				},
+			],
+		},
+		{
+			title: "Tenants",
+			url: "#",
+			icon: BookOpen,
+			items: [
+				{
+					title: "Incoming Applications",
+					url: "#",
+				},
+				{
+					title: "Active Tenants",
+					url: "#",
+				},
+				{
+					title: "Past Tenants",
+					url: "#",
+				},
+				{
+					title: "Complaints",
+					url: "#",
+				},
+			],
+		},
+		{
+			title: "Rents",
+			url: "#",
+			icon: Settings2,
+			items: [
+				{
+					title: "Upcoming Rent",
+					url: "#",
+				},
+				{
+					title: "Rent History",
+					url: "#",
+				},
+			],
+		},
+	],
+	caretaker: [
 		{
 			title: "Quick Links",
 			url: "#",
@@ -73,7 +136,7 @@ export const RouteData = {
 			],
 		},
 	],
-	adminNav: [
+	tenant: [
 		{
 			title: "Quick Links",
 			url: "#",
@@ -87,25 +150,88 @@ export const RouteData = {
 			],
 		},
 		{
+			title: "My Properties",
+			url: "#",
+			icon: Bot,
+			items: [
+				{
+					title: "Properties",
+					url: "/tn/my-listings/properties",
+				},
+			],
+		},
+		{
+			title: "Tenants",
+			url: "#",
+			icon: BookOpen,
+			items: [
+				{
+					title: "Incoming Applications",
+					url: "#",
+				},
+				{
+					title: "Active Tenants",
+					url: "#",
+				},
+				{
+					title: "Past Tenants",
+					url: "#",
+				},
+				{
+					title: "Complaints",
+					url: "#",
+				},
+			],
+		},
+		{
+			title: "Rents",
+			url: "#",
+			icon: Settings2,
+			items: [
+				{
+					title: "Upcoming Rent",
+					url: "#",
+				},
+				{
+					title: "Rent History",
+					url: "#",
+				},
+			],
+		},
+	],
+	admin: [
+		{
+			title: "Quick Links",
+			url: "#",
+			icon: SquareTerminal,
+			isActive: true,
+			items: [
+				{
+					title: "Dashboard",
+					url: "/ap-admin/dashboard",
+				},
+			],
+		},
+		{
 			title: "Settings",
 			url: "#",
 			icon: Bot,
 			items: [
 				{
 					title: "Category",
-					url: "/category/properties",
+					url: "/ap-admin/category",
 				},
 				{
 					title: "Sub Category",
-					url: "/category/sub-categories",
+					url: "/ap-admin/category/sub-categories",
 				},
 				{
 					title: "Property Attributes",
-					url: "/attributes/properties",
+					url: "/ap-admin/attributes/properties",
 				},
 				{
 					title: "Unit Attributes",
-					url: "/attributes/units",
+					url: "/ap-admin/attributes/units",
 				},
 			],
 		},
@@ -116,7 +242,7 @@ export const RouteData = {
 			items: [
 				{
 					title: "Properties",
-					url: "/listings/properties",
+					url: "/ap-admin/listings/properties",
 				},
 			],
 		},
@@ -140,7 +266,7 @@ export const RouteData = {
 			],
 		},
 	],
-	sharedNav: [
+	shared: [
 		{
 			name: "Account Settings",
 			url: "/account",

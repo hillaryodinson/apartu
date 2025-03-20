@@ -21,6 +21,7 @@ export const PropertySchema = z.object({
 	country: z.string(),
 	state: z.string(),
 	address: z.string(),
+	categoryId: z.string(),
 });
 
 export const ImageSchema = z.object({

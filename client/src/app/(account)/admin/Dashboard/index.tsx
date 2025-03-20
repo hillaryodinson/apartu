@@ -1,13 +1,9 @@
+const AdminDashboardPage = () => {
+	return (
+		<>
+			<div>Dashboard Page</div>
+		</>
+	);
+};
 
-
-const DashboardPage = () => {
-
-  return (
-   <>
-    <div>Dashboard Page</div>
-
-   </>
-  )
-}
-
-export default DashboardPage
+export default AdminDashboardPage;

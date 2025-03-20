@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { ApiResponse, PropertyType } from "@/utils/types";
 import { PropertySchema } from "@/utils/zod";
@@ -25,6 +25,14 @@ import api from "@/utils/api";
 import { toast } from "react-toastify";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
+import { fetchCategories } from "../action";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 const AddPropertyForm = ({
 	onSuccessFn,
@@ -38,6 +46,11 @@ const AddPropertyForm = ({
 	const [isLoading, startTransition] = useTransition();
 	const queryClient = useQueryClient();
 
+	const { data: categories } = useQuery({
+		queryKey: ["fetch_categories"],
+		queryFn: fetchCategories,
+	});
+
 	const form = useForm<z.infer<typeof PropertySchema>>({
 		resolver: zodResolver(PropertySchema),
 		defaultValues: {
@@ -46,6 +59,7 @@ const AddPropertyForm = ({
 			state: "",
 			address: "",
 			type: undefined,
+			categoryId: "",
 		},
 	});
 
@@ -84,6 +98,35 @@ const AddPropertyForm = ({
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="space-y-6"
 				method="POST">
+				<FormField
+					control={form.control}
+					name="categoryId"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Email</FormLabel>
+							<Select
+								onValueChange={field.onChange}
+								defaultValue={field.value}>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue placeholder="Select the category your property belongs to" />
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent>
+									{categories &&
+										categories.map((cat) => (
+											<SelectItem
+												value={cat.id}
+												key={cat.id}>
+												{cat.name}
+											</SelectItem>
+										))}
+								</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<FormField
 					control={form.control}
 					name="type"

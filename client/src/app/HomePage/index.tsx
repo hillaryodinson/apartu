@@ -3,7 +3,7 @@ import AboutSection from "../../components/site/about";
 import HeroSection from "../../components/site/hero";
 import ListingCategorySection from "../../components/site/listing-category";
 import ListingPropertySection from "../../components/site/listing-property";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 const Properties = [
 	{
@@ -38,11 +38,11 @@ const Properties = [
 ];
 
 const HomePage = () => {
-	const query = useQuery({
-		queryKey: ["fetch_properties"],
-		queryFn: () => {},
-		refetchInterval: 3600,
-	});
+	// const query = useQuery({
+	// 	queryKey: ["fetch_properties"],
+	// 	queryFn: () => {},
+	// 	refetchInterval: 3600,
+	// });
 	return (
 		<>
 			<Helmet>

@@ -107,6 +107,28 @@ model Unit {
   attributes UnitAttribute[]
 }
 
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  property    Property[]
+  subCategory SubCategory[]
+}
+
+model SubCategory {
+  id         String   @id @default(uuid())
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  unit Unit[]
+}
+
+
 enum AttributeValueType {
   boolean
   number
@@ -145,26 +167,6 @@ model PropertyAttribute {
   attributeId String
 }
 
-model Category {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  property    Property[]
-  subCategory SubCategory[]
-}
-
-model SubCategory {
-  id         String   @id @default(uuid())
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-  name       String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  unit Unit[]
-}
 
 model Image {
   id        String   @id @default(uuid())

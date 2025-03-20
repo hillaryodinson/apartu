@@ -53,7 +53,13 @@ export type PropertyType = {
 	updatedAt: string;
 };
 
+export type CategoryType = {
+	id: string;
+	name: string;
+};
+
 export type UnitBasicInfo = z.infer<typeof UnitBasicInfoSchema> & {
 	propertyId: string;
 };
 export type UnitImageInfo = z.infer<typeof ImageSchema>[];
+export type UserRole = "admin" | "tenant" | "caretaker" | "landlord";

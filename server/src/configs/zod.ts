@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { validateCategoryExists } from "../services/category.service";
+import {
+	validateCategoryExists,
+	validateSubCategoryExists,
+} from "../services/category.service";
 
 export const loginSchema = z.object({
 	email: z.string().email(),
@@ -47,7 +50,7 @@ export const imageSchema = z.object({
 
 export const unitSchema = z.object({
 	name: z.string().min(1, "Unit name is required"),
-	type: z.enum(["ENTIRE_PROPERTY", "APARTMENT", "ROOM"]),
+	typeId: z.string(),
 	rentPrice: z.number().positive("Rent price must be a positive number"),
 	rentDuration: z
 		.number()

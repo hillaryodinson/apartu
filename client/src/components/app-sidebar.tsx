@@ -14,6 +14,7 @@ import {
 import { useUserStore } from "@/store/user-store";
 import { Home } from "lucide-react";
 import { RouteData } from "@/routes/route";
+import { UserRole } from "@/utils/types";
 
 const site = {
 	name: "Apartu Homes",
@@ -31,13 +32,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain
-					items={
-						user && user.role == "admin"
-							? RouteData.adminNav
-							: RouteData.navMain
-					}
+					items={RouteData[(user?.role as UserRole) || "shared"]}
 				/>
-				<NavProjects projects={RouteData.sharedNav} />
+				<NavProjects projects={RouteData.shared} />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={{ ...user, avatar: "" }} />

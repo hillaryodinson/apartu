@@ -1,8 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useUserStore } from "../../store/user-store";
+import { useLocation } from "react-router-dom";
 // import { useAuth } from '../../providers/auth-provider';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+	const location = useLocation();
+
 	//   const { user } = useAuth(); // Destructure directly from useAuth()
 	const { user, logOut, token } = useUserStore((state) => state);
 	console.log("PROTECTED ROUTE TOKEN", token);
@@ -21,6 +24,29 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 			return null;
 			logOut();
 			return <Navigate to="/login" />;
+		}
+	}
+
+	const userRole = user?.role as
+		| "admin"
+		| "landlord"
+		| "tenant"
+		| "caretaker";
+	if (userRole === "admin") {
+		if (!location.pathname.startsWith("/ap-admin/")) {
+			return <Navigate to="/ap-admin/" />;
+		}
+	} else if (userRole === "landlord") {
+		if (!location.pathname.startsWith("/ll/")) {
+			return <Navigate to="/ll/dashboard" />;
+		}
+	} else if (userRole === "caretaker") {
+		if (!location.pathname.startsWith("/ct/")) {
+			return <Navigate to="/ct/dashboard" />;
+		}
+	} else if (userRole === "tenant") {
+		if (!location.pathname.startsWith("/tn/")) {
+			return <Navigate to="/tn/dashboard" />;
 		}
 	}
 

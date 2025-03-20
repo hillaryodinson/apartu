@@ -22,7 +22,7 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			redirect("/dashboard");
+			redirect("/ll/dashboard");
 		}
 	}, [isAuthenticated, redirect]);
 
@@ -57,7 +57,7 @@ const LoginPage = () => {
 							//check for callbackurl
 							setTimeout(() => {
 								const callback =
-									params.redirect || "/dashboard";
+									params.redirect || "/ll/dashboard";
 								redirect(callback);
 							}, 3000);
 						}

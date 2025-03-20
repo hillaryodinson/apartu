@@ -8,3 +8,12 @@ export async function validateCategoryExists(
 	});
 	return category !== null;
 }
+
+export async function validateSubCategoryExists(
+	subCategoryId: string
+): Promise<boolean> {
+	const subCategory = await db.subCategory.findUnique({
+		where: { id: subCategoryId },
+	});
+	return subCategory !== null;
+}

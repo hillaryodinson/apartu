@@ -14,7 +14,16 @@ interface Location {
 }
 
 const generateBreadcrumbs = (location: Location): JSX.Element => {
+	console.log(
+		location.pathname,
+		location.pathname.replace(/\/(ll|tn|ct|ap-admin)\//g, "/")
+	);
 	const pathnames = location.pathname
+		.replace(/\/(ll|tn|ct|ap-admin)\//g, "/")
+		.split("/")
+		.filter((x) => x && !x.match(/^\d+$/) && !x.includes("?"));
+
+	const routePathnames = location.pathname
 		.split("/")
 		.filter((x) => x && !x.match(/^\d+$/) && !x.includes("?"));
 
@@ -22,10 +31,12 @@ const generateBreadcrumbs = (location: Location): JSX.Element => {
 		<Breadcrumb>
 			<BreadcrumbList>
 				<BreadcrumbItem>
-					<BreadcrumbLink href="/">Home</BreadcrumbLink>
+					<BreadcrumbLink href="#">Home</BreadcrumbLink>
 				</BreadcrumbItem>
 				{pathnames.map((value, index) => {
-					const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+					const to = `/${routePathnames
+						.slice(0, index + 2)
+						.join("/")}`;
 					return (
 						<React.Fragment key={to}>
 							<BreadcrumbSeparator />

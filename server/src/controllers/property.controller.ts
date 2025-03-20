@@ -22,7 +22,6 @@ export const addProperty = async (req: Request, res: Response) => {
 		data: {
 			name: zodResponse.data.name,
 			address: zodResponse.data.address,
-			type: zodResponse.data.type,
 			ownerId: owner.id,
 			country: zodResponse.data.country,
 			state: zodResponse.data.state,
@@ -250,11 +249,7 @@ export const addUnit = async (req: Request, res: Response) => {
 	const newUnit = await db.unit.create({
 		data: {
 			...unitData,
-			property: {
-				connect: {
-					id: propertyId,
-				},
-			},
+			propertyId,
 		},
 	});
 
@@ -479,16 +474,8 @@ export const addSubUnit = async (req: Request, res: Response) => {
 	const newUnit = await db.unit.create({
 		data: {
 			...unitData,
-			parentUnit: {
-				connect: {
-					id: unit.id,
-				},
-			},
-			property: {
-				connect: {
-					id: unit.propertyId,
-				},
-			},
+			propertyId: unit.propertyId,
+			parentUnitId: unit.id,
 		},
 	});
 
