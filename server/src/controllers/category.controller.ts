@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import db from "../configs/db";
 import { AppError, ERROR_CODES } from "../utils/errors";
+import { TypedRequest } from "../configs/requests";
 
 // Add a new category
 export const addCategory = async (req: Request, res: Response) => {
@@ -83,6 +84,9 @@ export const getCategory = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const category = await db.category.findUnique({
 		where: { id },
+		include: {
+			subCategory: true,
+		},
 	});
 	if (!category) {
 		throw new AppError(
@@ -94,10 +98,7 @@ export const getCategory = async (req: Request, res: Response) => {
 	res.status(200).json({
 		success: true,
 		message: "ok",
-		data: {
-			id: category.id,
-			name: category.name,
-		},
+		data: category,
 	});
 };
 
@@ -113,5 +114,42 @@ export const getAllCategories = async (req: Request, res: Response) => {
 		success: true,
 		message: "ok",
 		data: categories,
+	});
+};
+
+// Add a new category
+export const addSubCategory = async (req: Request, res: Response) => {
+	const request = req as TypedRequest<
+		{ categoryId: string },
+		{ name: string }
+	>;
+	const catId = request.params.categoryId;
+	console.log(request.params);
+	const { name } = request.body;
+	const existingCategory = await db.subCategory.findUnique({
+		where: { name, categoryId: catId },
+	});
+
+	if (existingCategory) {
+		throw new AppError(
+			ERROR_CODES.DB_DUPLICATE_RECORD,
+			"Sub Category name already exists",
+			400
+		);
+	}
+	const newCategory = await db.subCategory.create({
+		data: {
+			name,
+			categoryId: catId,
+		},
+	});
+
+	res.status(201).json({
+		success: true,
+		message: "Sub Category created successfully",
+		data: {
+			id: newCategory.id,
+			name: newCategory.name,
+		},
 	});
 };

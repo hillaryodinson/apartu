@@ -61,7 +61,10 @@ export type CategoryType = {
 export type SubCategoryType = {
 	id: string;
 	name: string;
-	category: CategoryType;
+};
+
+export type CategoryWithSubCategoryType = CategoryType & {
+	subCategory: SubCategoryType[];
 };
 
 export type UnitBasicInfo = z.infer<typeof UnitBasicInfoSchema> & {

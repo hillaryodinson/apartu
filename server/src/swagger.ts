@@ -56,6 +56,25 @@ const options = {
 							type: "string",
 							example: "Apartment Complex",
 						},
+						subCategory: {
+							type: "array",
+							items: {
+								$ref: "#/components/schemas/Subcategory",
+							},
+						},
+					},
+				},
+				Subcategory: {
+					type: "object",
+					properties: {
+						id: {
+							type: "string",
+							example: "fcc8aca3-f9d7-412b-aac4-cde36a76cf7d",
+						},
+						name: {
+							type: "string",
+							example: "Room",
+						},
 					},
 				},
 				File: {
@@ -195,6 +214,7 @@ const options = {
 						},
 					},
 				},
+
 				User: {
 					type: "object",
 					properties: {

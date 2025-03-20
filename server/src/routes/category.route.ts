@@ -2,6 +2,7 @@ import express from "express";
 import { authorize, tryCatch } from "../middlewares/middleware";
 import {
 	addCategory,
+	addSubCategory,
 	deleteCategory,
 	getAllCategories,
 	getCategory,
@@ -205,5 +206,64 @@ categoryRouter.put("/:id", tryCatch(updateCategory));
  *               $ref: '#/components/schemas/Category'
  */
 categoryRouter.delete("/:id", tryCatch(deleteCategory));
+
+/**
+ * @swagger
+ * /category/{categoryId}:
+ *   post:
+ *     tags:
+ *       - Category
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Creates a new sub category
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Subcategory'
+ *     responses:
+ *       201:
+ *         description: The created sub category
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Ok
+ *                 data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Subcategory'
+ *       400:
+ *         description: Internal Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                   description: Whether the operation was successful
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the operation
+ *                   example: An error occured. Please try again
+ *                 errors:
+ *                   type: object
+ *                   description: A message indicating the result of the operation
+ */
+categoryRouter.post("/:categoryId", authorize, tryCatch(addSubCategory));
 
 export default categoryRouter;
