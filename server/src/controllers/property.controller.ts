@@ -63,16 +63,26 @@ export const getOwnerProperties = async (req: Request, res: Response) => {
 };
 
 export const getProperties = async (req: Request, res: Response) => {
+	const { withOwner, withCategory } = req.query;
+
+	const includeOptions: any = {};
+
+	if (withCategory === "true") {
+		includeOptions.category = true;
+	}
+
+	if (withOwner === "true") {
+		includeOptions.owner = true;
+	}
 	const properties = await db.property.findMany({
 		include: {
 			units: {
 				where: {
 					parentUnit: null,
 				},
-				include: {
-					subUnits: true,
-				},
+				include: { subUnits: true },
 			},
+			...includeOptions,
 		},
 	});
 	res.status(200).json({
