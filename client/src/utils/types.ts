@@ -47,6 +47,7 @@ export type PropertyType = {
 	id: string;
 	name: string;
 	ownerId: string;
+	owner?: UserType;
 	state: string;
 	type: string;
 	units: UnitType[];

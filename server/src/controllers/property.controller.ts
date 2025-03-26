@@ -95,6 +95,18 @@ export const getProperties = async (req: Request, res: Response) => {
 export const getSingleProperty = async (req: Request, res: Response) => {
 	const request = req as TypedRequest<{ propertyId: string }>;
 	const params = request.params;
+	const { withOwner, withCategory } = req.query;
+
+	const includeOptions: any = {};
+
+	if (withCategory === "true") {
+		includeOptions.category = true;
+	}
+
+	if (withOwner === "true") {
+		includeOptions.owner = true;
+	}
+
 	const properties = await db.property.findFirst({
 		where: {
 			id: params.propertyId,
@@ -110,6 +122,7 @@ export const getSingleProperty = async (req: Request, res: Response) => {
 					},
 				},
 			},
+			...includeOptions,
 		},
 	});
 	res.status(200).json({

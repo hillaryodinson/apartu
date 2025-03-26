@@ -11,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import CardListItem from "@/components/site/card-list-item";
 import api from "@/utils/api";
 import PropertyOverview from "@/components/site/property-overview";
-// import { usePropertyStore } from "@/store/property-store";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -22,7 +21,9 @@ const ApPropertyDetailsPage = () => {
 	const { data: property } = useQuery({
 		queryKey: ["property_overview", propertyId],
 		queryFn: async () => {
-			const response = await api.get(`/property/${propertyId}`);
+			const response = await api.get(
+				`/property/${propertyId}?withOwner=true&withCategory=true`
+			);
 			const result = (await response.data) as ApiResponse<PropertyType>;
 			return result.data;
 		},
