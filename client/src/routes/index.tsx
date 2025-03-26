@@ -16,6 +16,7 @@ import AdminDashboardPage from "@/app/(account)/admin/Dashboard";
 import ApPropertiesPage from "@/app/(account)/admin/Properties";
 import ApCategoriesPage from "@/app/(account)/admin/Settings/Categories";
 import ApAttributes from "@/app/(account)/admin/Settings/Attributes";
+import ApPropertyDetailsPage from "@/app/(account)/admin/Properties/PropertyDetail";
 export const routes = createBrowserRouter([
 	{
 		path: "/",
@@ -131,6 +132,10 @@ export const routes = createBrowserRouter([
 			{
 				path: "/ap-admin/listings/properties",
 				element: <ApPropertiesPage />,
+			},
+			{
+				path: "/ap-admin/listings/properties/:propertyId",
+				element: <ApPropertyDetailsPage />,
 			},
 			{
 				path: "/ap-admin/category",

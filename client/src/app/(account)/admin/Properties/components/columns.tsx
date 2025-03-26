@@ -17,11 +17,7 @@ export const getColumns = (): ColumnDef<PropertyType>[] => [
 		cell: ({ row }) => {
 			const currentMember = row.original as PropertyType;
 			console.log(currentMember);
-			return (
-				<div className="font-medium">
-					<Link to="/">{currentMember.name}</Link>
-				</div>
-			);
+			return <div className="font-medium">{currentMember.name}</div>;
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Property" />
@@ -76,7 +72,8 @@ export const getColumns = (): ColumnDef<PropertyType>[] => [
 		cell: ({ row }) => {
 			return (
 				<Button asChild size={"sm"}>
-					<Link to={`/ap-admin/properties/${row.original.id}`}>
+					<Link
+						to={`/ap-admin/listings/properties/${row.original.id}`}>
 						<Eye className="w-4 h-4" />
 						View
 					</Link>
