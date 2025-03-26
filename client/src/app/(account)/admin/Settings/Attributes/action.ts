@@ -10,7 +10,7 @@ export const fetchAttributes = async () => {
 };
 
 export const deleteAttribute = async (id: string) => {
-	const response = await api.delete(`/category/${id}`);
+	const response = await api.delete(`/attributes/${id}`);
 	const result = (await response.data) as ApiResponse<null>;
 
 	return result.data;

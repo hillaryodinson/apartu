@@ -43,7 +43,10 @@ const ApAttributes = () => {
 		},
 	});
 
-	const onDelete = () => {};
+	const onDelete = (data: AttributeType) => {
+		setAttribute(data);
+		setOpenConfirmDialog(true);
+	};
 	const columns = useMemo(() => getColumns({ onEdit, onDelete }), []);
 
 	const { data: attributes } = useQuery({
@@ -99,11 +102,11 @@ const ApAttributes = () => {
 			</Modal>
 			{attribute && (
 				<ConfirmModal
-					title="Delete Category"
+					title="Delete Attribute"
 					onConfirm={() => doDelete(attribute.id!)}
 					onOpen={openConfirmDialog}
 					setOpen={setOpenConfirmDialog}>
-					<p>
+					<p className="text-center">
 						Are you sure you want to delete <b>{attribute?.name}</b>
 						?
 					</p>
