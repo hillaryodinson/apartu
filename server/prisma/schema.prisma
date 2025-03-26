@@ -128,22 +128,10 @@ model SubCategory {
   unit Unit[]
 }
 
-
-enum AttributeValueType {
-  boolean
-  number
-  string
-}
-
-enum AttributeType {
-  property
-  unit
-}
-
 model Attribute {
   id        String             @id @default(uuid())
-  type      AttributeType
-  valueType AttributeValueType
+  type      String //property | unit
+  valueType String //boolean | number | string
   name      String             @unique
 
   unitAttribute     UnitAttribute[]
