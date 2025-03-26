@@ -31,7 +31,7 @@ export const propertySchema = z.object({
 	address: z.string(),
 	state: z.string(),
 	country: z.string(),
-	type: z.enum(["HOUSE", "APARTMENT_COMPLEX"]),
+	type: z.string(),
 	categoryId: z.string().refine(
 		async (categoryId) => {
 			const exists = await validateCategoryExists(categoryId);
@@ -61,3 +61,9 @@ export const unitSchema = z.object({
 });
 
 export const unitUpdateSchema = unitSchema.partial();
+
+export const attributeSchema = z.object({
+	type: z.enum(["property", "unit"]),
+	valueType: z.enum(["boolean", "number", "string"]),
+	name: z.string(),
+});

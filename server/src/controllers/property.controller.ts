@@ -9,7 +9,8 @@ import path from "path";
 
 export const addProperty = async (req: Request, res: Response) => {
 	//validate the user input
-	const zodResponse = propertySchema.safeParse(req.body);
+	console.log(req.body);
+	const zodResponse = await propertySchema.safeParseAsync(req.body);
 	if (zodResponse.error) throw zodResponse.error;
 
 	//get the ownerId from req
@@ -51,6 +52,7 @@ export const getOwnerProperties = async (req: Request, res: Response) => {
 					images: true,
 				},
 			},
+			category: true,
 		},
 	});
 	res.status(200).json({

@@ -20,6 +20,10 @@ const options = {
 				description: "Authentication related endpoints",
 			},
 			{
+				name: "Attributes",
+				description: "Attribute related endpoints",
+			},
+			{
 				name: "Category",
 				description: "Category related endpoints",
 			},
@@ -45,6 +49,29 @@ const options = {
 				},
 			},
 			schemas: {
+				Attribute: {
+					type: "object",
+					properties: {
+						id: {
+							type: "string",
+							example: "fcc8aca3-f9d7-412b-aac4-cde36a76cf7d",
+						},
+						name: {
+							type: "string",
+							example: "Room ",
+						},
+						type: {
+							type: "string",
+							enum: ["property", "unit"],
+							example: "property",
+						},
+						valueType: {
+							type: "string",
+							enum: ["boolean", "string", "number"],
+							example: "boolean ",
+						},
+					},
+				},
 				Category: {
 					type: "object",
 					properties: {

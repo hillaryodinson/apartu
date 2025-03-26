@@ -4,6 +4,7 @@ import UserRoute from "./user.route";
 import PropertyRoute from "./property.route";
 import FileRoute from "./file.route";
 import CategoryRouter from "./category.route";
+import AttributeRouter from "./attribute.route";
 
 const initRoutes = (baseRoute: string, app: Express) => {
 	app.use(`${baseRoute}/auth`, AuthRoute);
@@ -11,6 +12,7 @@ const initRoutes = (baseRoute: string, app: Express) => {
 	app.use(`${baseRoute}/property`, PropertyRoute);
 	app.use(`${baseRoute}/file`, FileRoute);
 	app.use(`${baseRoute}/category`, CategoryRouter);
+	app.use(`${baseRoute}/attributes`, AttributeRouter);
 };
 
 export default initRoutes;
