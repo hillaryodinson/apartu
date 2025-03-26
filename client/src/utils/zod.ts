@@ -17,7 +17,7 @@ export const SignupSchema = z.object({
 
 export const PropertySchema = z.object({
 	name: z.string(),
-	type: z.enum(["APARTMENT_COMPLEX", "HOUSE"]),
+	type: z.string(),
 	country: z.string(),
 	state: z.string(),
 	address: z.string(),
@@ -31,7 +31,7 @@ export const ImageSchema = z.object({
 
 export const UnitBasicInfoSchema = z.object({
 	name: z.string(),
-	type: z.enum(["ENTIRE_PROPERTY", "APARTMENT", "ROOM"]),
+	type: z.string(),
 	rentPrice: z.coerce.number(),
 	rentDuration: z.coerce.number(),
 	rentCycle: z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]),
@@ -45,4 +45,10 @@ export const CategorySchema = z.object({ name: z.string() });
 export const SubCategorySchema = z.object({
 	name: z.string(),
 	categoryId: z.string(),
+});
+
+export const AttributeSchema = z.object({
+	name: z.string(),
+	type: z.string(),
+	valueType: z.string(),
 });

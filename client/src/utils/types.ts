@@ -51,11 +51,16 @@ export type PropertyType = {
 	type: string;
 	units: UnitType[];
 	updatedAt: string;
+	category: {
+		id: string;
+		name: string;
+	};
 };
 
 export type CategoryType = {
 	id: string;
 	name: string;
+	subCategory: SubCategoryType[];
 };
 
 export type SubCategoryType = {
@@ -72,3 +77,9 @@ export type UnitBasicInfo = z.infer<typeof UnitBasicInfoSchema> & {
 };
 export type UnitImageInfo = z.infer<typeof ImageSchema>[];
 export type UserRole = "admin" | "tenant" | "caretaker" | "landlord";
+export type AttributeType = {
+	name: string;
+	type: string;
+	valueType: string;
+	id?: string;
+};

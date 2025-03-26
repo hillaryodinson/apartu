@@ -26,7 +26,7 @@ const MyPropertiesPage = () => {
 				onView: (data: PropertyType) => {
 					console.log(data);
 					setSelectedProperty(data);
-					navigate(`/my-listings/properties/${data.id}`);
+					navigate(`/ll/my-listings/properties/${data.id}`);
 				},
 				onDelete: (data: PropertyType) => {
 					console.log(data);

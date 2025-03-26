@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { ApiResponse, PropertyType } from "@/utils/types";
+import { ApiResponse, CategoryType, PropertyType } from "@/utils/types";
 import { PropertySchema } from "@/utils/zod";
 import LocationSelector, {
 	CountryProps,
@@ -43,6 +43,7 @@ const AddPropertyForm = ({
 }) => {
 	const [countryName, setCountryName] = useState("");
 	const [stateName, setStateName] = useState("");
+	const [selectedCat, setSelectedCat] = useState<string | null>(null);
 	const [isLoading, startTransition] = useTransition();
 	const queryClient = useQueryClient();
 
@@ -61,6 +62,18 @@ const AddPropertyForm = ({
 			type: undefined,
 			categoryId: "",
 		},
+	});
+
+	const { data: subcats } = useQuery({
+		queryKey: ["fetch_sub_cat", selectedCat],
+		queryFn: async () => {
+			if (!selectedCat) return [];
+			const response = await api.get(`/category/${selectedCat}`);
+			const result = (await response.data) as ApiResponse<CategoryType>;
+			if (result.success) return result.data?.subCategory;
+			return [];
+		},
+		enabled: !!selectedCat,
 	});
 
 	const createProperty = useMutation({
@@ -105,7 +118,10 @@ const AddPropertyForm = ({
 						<FormItem>
 							<FormLabel>Select Propery Category</FormLabel>
 							<Select
-								onValueChange={field.onChange}
+								onValueChange={(value) => {
+									field.onChange(value);
+									setSelectedCat(value);
+								}}
 								defaultValue={field.value}>
 								<FormControl>
 									<SelectTrigger className="w-full">
@@ -127,50 +143,42 @@ const AddPropertyForm = ({
 						</FormItem>
 					)}
 				/>
-				<FormField
-					control={form.control}
-					name="type"
-					render={({ field }) => (
-						<FormItem className="space-y-2">
-							<FormLabel>
-								What type of property are you offering?
-							</FormLabel>
-							<FormControl>
-								<RadioGroup
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-									className="flex space-y-0">
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem value="APARTMENT_COMPLEX" />
-										</FormControl>
-										<FormLabel className="font-normal">
-											Apartment Complex
-										</FormLabel>
-									</FormItem>
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem value="HOUSE" />
-										</FormControl>
-										<FormLabel className="font-normal">
-											House
-										</FormLabel>
-									</FormItem>
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem value="ESTATE" />
-										</FormControl>
-										<FormLabel className="font-normal">
-											Estate
-										</FormLabel>
-									</FormItem>
-								</RadioGroup>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
+				{subcats && (
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem className="space-y-2">
+								<FormLabel>
+									What type of property are you offering?
+								</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex space-y-0">
+										{subcats &&
+											subcats.map((subcat) => (
+												<FormItem
+													className="flex items-center space-x-3 space-y-0"
+													key={subcat.id}>
+													<FormControl>
+														<RadioGroupItem
+															value={subcat.name}
+														/>
+													</FormControl>
+													<FormLabel className="font-normal">
+														{subcat.name}
+													</FormLabel>
+												</FormItem>
+											))}
+									</RadioGroup>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				)}
 				<FormField
 					control={form.control}
 					name="name"

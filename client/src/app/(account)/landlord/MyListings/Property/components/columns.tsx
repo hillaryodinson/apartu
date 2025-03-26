@@ -65,16 +65,8 @@ export const getColumns = ({
 	{
 		accessorKey: "type",
 		cell: ({ row }) => {
-			const currentMember = row.original.type;
-
-			if (currentMember.toLowerCase() == "apartment_complex")
-				return <div className="font-medium">Apartment Complex</div>;
-			else
-				return (
-					<div className="font-medium capitalize">
-						{row.original.type.toLowerCase()}
-					</div>
-				);
+			const currentMember = row.original.category.name;
+			return <div className="font-medium">{currentMember}</div>;
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Type" />

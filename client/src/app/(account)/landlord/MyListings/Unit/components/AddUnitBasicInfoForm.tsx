@@ -148,7 +148,7 @@ const AddUnitForm = ({
 				<div className="flex flex-col space-y-4">
 					<FormDescription className="font-medium text-slate-900">
 						<small className="text-lg">
-							I want my tenant to pay{" "}
+							I want my tenant to pay
 							{toCurrency(displayData.amount)} every{" "}
 							{displayData.duration}{" "}
 							{getCycleLabel({

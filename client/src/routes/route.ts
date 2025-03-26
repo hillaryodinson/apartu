@@ -222,16 +222,8 @@ export const RouteData = {
 					url: "/ap-admin/category",
 				},
 				{
-					title: "Sub Category",
-					url: "/ap-admin/category/sub-categories",
-				},
-				{
 					title: "Property Attributes",
-					url: "/ap-admin/attributes/properties",
-				},
-				{
-					title: "Unit Attributes",
-					url: "/ap-admin/attributes/units",
+					url: "/ap-admin/attributes",
 				},
 			],
 		},

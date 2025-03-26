@@ -15,7 +15,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AdminDashboardPage from "@/app/(account)/admin/Dashboard";
 import ApPropertiesPage from "@/app/(account)/admin/Properties";
 import ApCategoriesPage from "@/app/(account)/admin/Settings/Categories";
-import ApSubCategoriesPage from "@/app/(account)/admin/Settings/SubCategories";
+import ApAttributes from "@/app/(account)/admin/Settings/Attributes";
 export const routes = createBrowserRouter([
 	{
 		path: "/",
@@ -137,8 +137,8 @@ export const routes = createBrowserRouter([
 				element: <ApCategoriesPage />,
 			},
 			{
-				path: "/ap-admin/category/:categoryId/sub-categories",
-				element: <ApSubCategoriesPage />,
+				path: "/ap-admin/attributes",
+				element: <ApAttributes />,
 			},
 		],
 	},
