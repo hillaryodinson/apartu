@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { ApiResponse, CategoryType, PropertyType } from "@/utils/types";
+import { ApiResponse, PropertyType } from "@/utils/types";
 import { PropertySchema } from "@/utils/zod";
 import LocationSelector, {
 	CountryProps,
@@ -59,21 +59,9 @@ const AddPropertyForm = ({
 			country: "",
 			state: "",
 			address: "",
-			type: undefined,
 			categoryId: "",
+			rentalType: "",
 		},
-	});
-
-	const { data: subcats } = useQuery({
-		queryKey: ["fetch_sub_cat", selectedCat],
-		queryFn: async () => {
-			if (!selectedCat) return [];
-			const response = await api.get(`/category/${selectedCat}`);
-			const result = (await response.data) as ApiResponse<CategoryType>;
-			if (result.success) return result.data?.subCategory;
-			return [];
-		},
-		enabled: !!selectedCat,
 	});
 
 	const createProperty = useMutation({
@@ -87,12 +75,16 @@ const AddPropertyForm = ({
 			throw new Error(result.message);
 		},
 		onSuccess: (data) => {
-			toast.success("Property created successfully");
-			form.reset();
-			if (data) onSuccessFn(data);
-			queryClient.invalidateQueries({
-				queryKey: ["fetch_my_properties"],
-			});
+			if (data && selectedCat) {
+				toast.success("Property created successfully");
+				form.reset();
+				onSuccessFn(data);
+				queryClient.invalidateQueries({
+					queryKey: ["fetch_my_properties"],
+				});
+			} else {
+				console.log("An error occured please contact admin :505");
+			}
 		},
 		onError: (error) => {
 			toast.error(error.message);
@@ -143,42 +135,7 @@ const AddPropertyForm = ({
 						</FormItem>
 					)}
 				/>
-				{subcats && (
-					<FormField
-						control={form.control}
-						name="type"
-						render={({ field }) => (
-							<FormItem className="space-y-2">
-								<FormLabel>
-									What type of property are you offering?
-								</FormLabel>
-								<FormControl>
-									<RadioGroup
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-										className="flex space-y-0">
-										{subcats &&
-											subcats.map((subcat) => (
-												<FormItem
-													className="flex items-center space-x-3 space-y-0"
-													key={subcat.id}>
-													<FormControl>
-														<RadioGroupItem
-															value={subcat.name}
-														/>
-													</FormControl>
-													<FormLabel className="font-normal">
-														{subcat.name}
-													</FormLabel>
-												</FormItem>
-											))}
-									</RadioGroup>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				)}
+
 				<FormField
 					control={form.control}
 					name="name"
@@ -198,38 +155,35 @@ const AddPropertyForm = ({
 					)}
 				/>
 
-				<div>
-					<FormItem className="space-y-2">
-						<FormLabel>
-							Are you renting part of the property?
-						</FormLabel>
-						<FormControl>
-							<RadioGroup
-								onValueChange={(value) => {
-									setHasUnit(value === "yes");
-								}}
-								className="flex space-y-0">
-								<FormItem className="flex items-center space-x-3 space-y-0">
-									<FormControl>
-										<RadioGroupItem value="yes" />
-									</FormControl>
-									<FormLabel className="font-normal">
-										Yes
-									</FormLabel>
-								</FormItem>
-								<FormItem className="flex items-center space-x-3 space-y-0">
-									<FormControl>
-										<RadioGroupItem value="No" />
-									</FormControl>
-									<FormLabel className="font-normal">
-										No
-									</FormLabel>
-								</FormItem>
-							</RadioGroup>
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				</div>
+				<FormItem className="space-y-2">
+					<FormLabel>Rental Type</FormLabel>
+					<FormControl>
+						<RadioGroup
+							onValueChange={(value) => {
+								setHasUnit(value === "part");
+								form.setValue("rentalType", value);
+							}}
+							className="flex space-y-0">
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="whole" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									Whole Property
+								</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="part" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									Individual Rooms
+								</FormLabel>
+							</FormItem>
+						</RadioGroup>
+					</FormControl>
+					<FormMessage />
+				</FormItem>
 
 				<FormField
 					control={form.control}

@@ -31,7 +31,7 @@ export const propertySchema = z.object({
 	address: z.string(),
 	state: z.string(),
 	country: z.string(),
-	type: z.string(),
+	rentalType: z.enum(["whole", "part"]),
 	categoryId: z.string().refine(
 		async (categoryId) => {
 			const exists = await validateCategoryExists(categoryId);

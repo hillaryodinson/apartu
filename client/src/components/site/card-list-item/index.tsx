@@ -78,15 +78,7 @@ export default function CardListItem({
 					<h3 className="text-lg font-semibold">{apartment.name}</h3>
 					<div className="mt-2 space-y-1">
 						<p className="text-sm font-medium">
-							Type:{" "}
-							<TypeBadge
-								type={
-									apartment.type as
-										| "ENTIRE_PROPERTY"
-										| "ROOM"
-										| "APARTMENT"
-								}
-							/>
+							Type: <TypeBadge type={apartment.type.name} />
 						</p>
 						<div className="flex gap-10 flex-wrap">
 							<p className="text-sm font-medium">
@@ -149,21 +141,10 @@ export default function CardListItem({
 	);
 }
 
-const TypeBadge = ({
-	type,
-}: {
-	type: "ENTIRE_PROPERTY" | "ROOM" | "APARTMENT";
-}) => {
-	if (type == "ENTIRE_PROPERTY")
-		return (
-			<span className="text-sm text-muted-foreground">
-				Entire Property
-			</span>
-		);
-	else
-		return (
-			<span className="text-sm text-muted-foreground capitalize">
-				{type.toLowerCase()}
-			</span>
-		);
+const TypeBadge = ({ type }: { type: string }) => {
+	return (
+		<span className="text-sm text-muted-foreground capitalize">
+			{type.toLowerCase()}
+		</span>
+	);
 };

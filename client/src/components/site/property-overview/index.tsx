@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyType } from "@/utils/types";
-import { Building, MapPin } from "lucide-react";
+import { Blocks, Building, MapPin } from "lucide-react";
 import ProfileCard from "../user-profile-card";
+import { Badge } from "@/components/ui/badge";
 
 export default function PropertyOverview({
 	property,
@@ -37,10 +38,17 @@ export default function PropertyOverview({
 						<MapPin className="h-4 w-4" />
 						<span>{property.address}</span>
 					</div>
+					<div className="flex items-center gap-2 mt-1 text-muted-foreground">
+						<Blocks className="h-4 w-4" />
+						Rental Type:{" "}
+						<Badge variant={"outline"}>{property.rentalType}</Badge>
+					</div>
 				</div>
-				<div className="owner_profile flex-1 flex flex-col align-right">
-					<ProfileCard owner={property.owner!} />
-				</div>
+				{property.owner && (
+					<div className="owner_profile flex-1 flex flex-col align-right">
+						<ProfileCard owner={property.owner!} />
+					</div>
+				)}
 			</div>
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

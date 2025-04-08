@@ -21,8 +21,6 @@ export const InitApp = () => {
 	app.set("views", path.join(__dirname, "/views"));
 	app.use(bodyParser.urlencoded({ extended: true }));
 
-	console.log("Current directory:", __dirname);
-
 	app.use(bodyParser.json());
 	app.use(
 		helmet({

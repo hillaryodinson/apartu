@@ -32,7 +32,9 @@ const MyPropertyDetailsPage = () => {
 	const { data: property } = useQuery({
 		queryKey: ["property_overview", propertyId],
 		queryFn: async () => {
-			const response = await api.get(`/property/${propertyId}`);
+			const response = await api.get(
+				`/property/${propertyId}?withCategory=true`
+			);
 			const result = (await response.data) as ApiResponse<PropertyType>;
 			return result.data;
 		},

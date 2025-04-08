@@ -27,7 +27,7 @@ export type UnitType = {
 	rentPrice: number;
 	rentDuration: number;
 	rentCycle: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
-	type: string;
+	type: SubCategoryType;
 	images: ImageType[];
 	parentUnit: string | null;
 	subUnits: UnitType[];
@@ -49,7 +49,7 @@ export type PropertyType = {
 	ownerId: string;
 	owner?: UserType;
 	state: string;
-	type: string;
+	rentalType: string;
 	units: UnitType[];
 	updatedAt: string;
 	category: {

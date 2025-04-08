@@ -24,8 +24,15 @@ import {
 } from "@/components/ui/select";
 import { z } from "zod";
 import { usePropertyStore } from "@/store/property-store";
-import { PropertyType, UnitBasicInfo } from "@/utils/types";
+import {
+	ApiResponse,
+	CategoryType,
+	PropertyType,
+	UnitBasicInfo,
+} from "@/utils/types";
 import { UnitBasicInfoSchema } from "@/utils/zod";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/utils/api";
 
 interface AddUnitFormProps {
 	property: PropertyType;
@@ -49,17 +56,29 @@ const AddUnitForm = ({
 	);
 	const unitBasicInfo = usePropertyStore((state) => state.unitBasicInfo);
 	const [displayData, setDisplayData] = useState<DisplayDataType>({
-		amount: unitBasicInfo?.rentPrice || 10,
+		amount: unitBasicInfo?.rentPrice || 0,
 		duration: unitBasicInfo?.rentDuration || 1,
 		cycle: unitBasicInfo?.rentCycle || "YEARLY",
 	});
 
+	const { data: subcats } = useQuery({
+		queryKey: ["fetch_sub_cat", property.category.id],
+		queryFn: async () => {
+			if (!property.category.id) return [];
+			const response = await api.get(`/category/${property.category.id}`);
+			const result = (await response.data) as ApiResponse<CategoryType>;
+			if (result.success) return result.data?.subCategory;
+			return [];
+		},
+		enabled: !!property.category.id,
+	});
+
 	const initialValues: UnitBasicInfo = {
 		name: !hasUnit ? property.name : "",
-		type: !hasUnit ? "ENTIRE_PROPERTY" : "ROOM",
-		rentPrice: unitBasicInfo?.rentPrice || 10,
-		rentDuration: unitBasicInfo?.rentDuration || 1,
-		rentCycle: unitBasicInfo?.rentCycle || "YEARLY",
+		typeId: !hasUnit ? "default" : "",
+		rentPrice: displayData.amount,
+		rentDuration: displayData.duration,
+		rentCycle: displayData.cycle,
 		propertyId: property.id,
 	};
 
@@ -83,39 +102,34 @@ const AddUnitForm = ({
 					{hasUnit && (
 						<FormField
 							control={form.control}
-							name="type"
+							name="typeId"
 							render={({ field }) => (
-								<FormItem className="space-y-1">
-									<FormLabel>Apartment or Room?</FormLabel>
-									<FormDescription>
-										Select whether you're offering a part of
-										your property or the entire property for
-										rent.
-									</FormDescription>
+								<FormItem className="space-y-2">
+									<FormLabel>
+										What type of unit are you offering?
+									</FormLabel>
 									<FormControl>
 										<RadioGroup
 											onValueChange={field.onChange}
 											defaultValue={field.value}
-											className="flex flex-col space-y-0">
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="APARTMENT" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													Apartment: A separate living
-													unit (e.g., a studio or
-													one-bedroom apartment).
-												</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="ROOM" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													Room: A single room within a
-													property (e.g., a bedroom).
-												</FormLabel>
-											</FormItem>
+											className="flex space-y-0">
+											{subcats &&
+												subcats.map((subcat) => (
+													<FormItem
+														className="flex items-center space-x-3 space-y-0"
+														key={subcat.id}>
+														<FormControl>
+															<RadioGroupItem
+																value={
+																	subcat.id
+																}
+															/>
+														</FormControl>
+														<FormLabel className="font-normal">
+															{subcat.name}
+														</FormLabel>
+													</FormItem>
+												))}
 										</RadioGroup>
 									</FormControl>
 									<FormMessage />
@@ -125,30 +139,29 @@ const AddUnitForm = ({
 					)}
 				</div>
 
-				{!hasUnit && (
-					<FormField
-						control={form.control}
-						name="name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Property Name</FormLabel>
-								<FormControl>
-									<Input
-										placeholder=""
-										type="text"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				)}
+				<FormField
+					control={form.control}
+					name="name"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Unit Name</FormLabel>
+							<FormControl>
+								<Input
+									placeholder=""
+									type="text"
+									{...field}
+									disabled={!hasUnit}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
 				<div className="flex flex-col space-y-4">
 					<FormDescription className="font-medium text-slate-900">
 						<small className="text-lg">
-							I want my tenant to pay
+							I want my tenant to pay{" "}
 							{toCurrency(displayData.amount)} every{" "}
 							{displayData.duration}{" "}
 							{getCycleLabel({

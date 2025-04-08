@@ -21,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 		const expiryTime = JSON.parse(atob(token.split(".")[1])).exp;
 		const currentTime = Date.now() / 1000;
 		if (expiryTime < currentTime) {
+			logOut();
 			return <Navigate to="/login" />;
 		}
 	}

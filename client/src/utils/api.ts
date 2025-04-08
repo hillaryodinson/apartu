@@ -43,7 +43,7 @@ api.interceptors.response.use(
 		// Check if the error response status is 401
 		if (error.response && error.response.status === 401) {
 			// Remove the token from localStorage
-			localStorage.removeItem("token");
+			localStorage.removeItem("user-store");
 
 			// Get the current visited URL
 			const currentUrl = window.location.href;

@@ -10,6 +10,7 @@ import { CirclePlus, EllipsisVertical, Eye, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropertyType } from "@/utils/types";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 interface ColumnProps {
 	onView?: (id: PropertyType) => void;
@@ -27,7 +28,7 @@ export const getColumns = ({
 	{
 		accessorKey: "id",
 		header: "#",
-		size: 100,
+		size: 10,
 		cell: (info) => info.row.index + 1,
 	},
 	{
@@ -35,31 +36,16 @@ export const getColumns = ({
 		cell: ({ row }) => {
 			const currentMember = row.original as PropertyType;
 			return (
-				<div className="font-medium">
-					<Link
-						to="#"
-						onClick={() => onView && onView(currentMember)}>
-						{currentMember.name}
-					</Link>
-				</div>
+				<Link to="#" onClick={() => onView && onView(currentMember)}>
+					<div className="font-medium">{currentMember.name}</div>
+					<div className="text-xs text-muted-foreground">
+						{currentMember.address}
+					</div>
+				</Link>
 			);
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Property" />
-		),
-	},
-	{
-		accessorKey: "country",
-		cell: ({ row }) => {
-			const currentMember = row.original as PropertyType;
-			return (
-				<div className="text-xs text-muted-foreground">
-					{currentMember.address}
-				</div>
-			);
-		},
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Address" />
 		),
 	},
 	{
@@ -70,6 +56,24 @@ export const getColumns = ({
 		},
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Type" />
+		),
+	},
+	{
+		accessorKey: "rentalType",
+		cell: ({ row }) => {
+			const currentMember = row.original.rentalType;
+			return (
+				<div className="w-full flex align-items-center">
+					<Badge variant={"outline"} className="capitalize">
+						{currentMember !== "whole"
+							? "units"
+							: currentMember + " Property"}
+					</Badge>
+				</div>
+			);
+		},
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Rental Type" />
 		),
 	},
 	{

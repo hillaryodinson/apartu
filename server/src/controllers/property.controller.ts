@@ -27,6 +27,10 @@ export const addProperty = async (req: Request, res: Response) => {
 			country: zodResponse.data.country,
 			state: zodResponse.data.state,
 			categoryId: zodResponse.data.categoryId,
+			rentalType: zodResponse.data.rentalType,
+		},
+		include: {
+			category: true,
 		},
 	});
 
@@ -95,7 +99,7 @@ export const getProperties = async (req: Request, res: Response) => {
 export const getSingleProperty = async (req: Request, res: Response) => {
 	const request = req as TypedRequest<{ propertyId: string }>;
 	const params = request.params;
-	const { withOwner, withCategory } = req.query;
+	const { withOwner, withCategory, withUnits } = req.query;
 
 	const includeOptions: any = {};
 
@@ -107,21 +111,25 @@ export const getSingleProperty = async (req: Request, res: Response) => {
 		includeOptions.owner = true;
 	}
 
+	if (withUnits === "true" || withUnits == undefined) {
+		includeOptions.units = {
+			include: {
+				images: true,
+				parentUnit: {
+					select: {
+						name: true,
+					},
+				},
+				type: true,
+			},
+		};
+	}
+
 	const properties = await db.property.findFirst({
 		where: {
 			id: params.propertyId,
 		},
 		include: {
-			units: {
-				include: {
-					images: true,
-					parentUnit: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
 			...includeOptions,
 		},
 	});
@@ -270,7 +278,10 @@ export const addUnit = async (req: Request, res: Response) => {
 		);
 
 	const { images, ...unitData } = zodResponse.data;
-
+	console.log({
+		...unitData,
+		propertyId,
+	});
 	const newUnit = await db.unit.create({
 		data: {
 			...unitData,

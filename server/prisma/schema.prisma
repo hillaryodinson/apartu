@@ -73,6 +73,7 @@ model Property {
   state      String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  rentalType String @default("whole") //whole | part
 
   units      Unit[]
   attributes PropertyAttribute[]
@@ -119,9 +120,9 @@ model Category {
 
 model SubCategory {
   id         String   @id @default(uuid())
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-  name       String   @unique
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  name       String    @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
